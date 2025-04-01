@@ -1,0 +1,23 @@
+.word {
+    font-size: 20px;
+    margin-right: 5px;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 5px; 
+}
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin: 0;
+}
+.clickable-word {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#text{
+    width: 100%; /* or any specific width */
+    border: 1px solid #000;
+}
