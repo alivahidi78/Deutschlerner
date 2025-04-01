@@ -27,7 +27,7 @@ const displayText = (display_data) => {
 
     for (let i = 0; i < words.length; i++) {
         const wordElement = document.createElement('span');
-        if (highlight[i] === 1) {
+        if (highlight[i] == true) {
             wordElement.className = 'highlighted_word';
         } else {
             wordElement.className = 'word';
@@ -49,6 +49,10 @@ function updateText() {
         document.getElementById('page_num').innerHTML = response[1] + '/' + response[2]
         displayText(response[3])
     });
+}
+
+function mainMenu() {
+    pywebview.api.load_page("main.html");
 }
 
 window.onload = function () {

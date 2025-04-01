@@ -1,5 +1,6 @@
 .venv/
 examples/
+db/
 .env
 test.ipynb
 __pycache__/

@@ -5,6 +5,7 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 import re
+from db import DB #TODO faulty approach, calling different object
 
 class DATA:
     window = None
@@ -35,12 +36,8 @@ def get_chapter():
     pass
     
 def pre_process(text):
-    #TODO delete after database is set up
-    test_list = ["kein", "Bett", "Greg"]
-    check_highlight = np.vectorize(lambda value : value in test_list)
     paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
     word_list = np.empty(0)
-    highlight = np.empty(0)
     index = np.empty(0)
     word_count = 0
 
@@ -49,10 +46,17 @@ def pre_process(text):
         index = np.append(index, np.arange(word_count, word_count + len(words)))
         word_count = word_count + len(words)
         words.append("\n")
-        highlight = np.append(highlight, check_highlight(words))
         index = np.append(index, -1)
         word_list = np.append(word_list, words)
-    return word_list.tolist(), index.tolist(), highlight.tolist()
+        
+    db = DB() 
+    #TODO faulty approach, calling different object than main
+    #TODO check actual words. these contain random bits of punctuation, etc
+    #TODO do not highlight words that are not words (numbers etc)
+    highlight = (db.check_word_list(word_list))
+    highlight = [not elem for elem in highlight]
+    
+    return word_list.tolist(), index.tolist(), highlight
 
 def epub2txt(epub_path, txt_chapter_folder):
     # Load EPUB file
@@ -74,3 +78,6 @@ def epub2txt(epub_path, txt_chapter_folder):
                 f.write(chapter_text)
                 # Increment chapter counter
             chapter_counter += 1
+
+def import_epub():
+    pass
