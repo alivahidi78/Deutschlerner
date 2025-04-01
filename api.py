@@ -21,7 +21,7 @@ class API:
     def get_text(self):
         title, display_data = utils.get_text()
         page = 1
-        outof = 5
+        outof = 2
         return title, page, outof, display_data
 
     def word_clicked(self, word, index):

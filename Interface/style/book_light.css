@@ -19,9 +19,21 @@ body {
     font-family: Arial, sans-serif;
     padding: 20px;
     margin: 0;
+    background-color: rgb(225, 237, 250);
 }
 
 #text {
     /* width: 100%; or any specific width */
-    border: 1px solid #000;
+    border: 1px solid white;
+    padding: 20px 20px 20px 20px;
+    background-color: white;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #83bdfb;
+    color: white;
+    text-decoration: none;
 }

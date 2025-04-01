@@ -1,12 +1,17 @@
 import os
 from dotenv import load_dotenv
 import numpy as np
+import ebooklib
+from ebooklib import epub
+from bs4 import BeautifulSoup
+import re
 
 class DATA:
     window = None
     text = None
     title = None
     display_data = None
+    last_index = 0
 
 def read_txt(path):
     try:
@@ -25,9 +30,10 @@ def get_text():
     DATA.text = read_txt(os.getenv("TEST_FILE_PATH"))
     DATA.display_data = list(pre_process(DATA.text))
     return DATA.title, DATA.display_data
-    
-    
 
+def get_chapter():
+    pass
+    
 def pre_process(text):
     #TODO delete after database is set up
     test_list = ["kein", "Bett", "Greg"]
@@ -47,3 +53,24 @@ def pre_process(text):
         index = np.append(index, -1)
         word_list = np.append(word_list, words)
     return word_list.tolist(), index.tolist(), highlight.tolist()
+
+def epub2txt(epub_path, txt_chapter_folder):
+    # Load EPUB file
+    book = epub.read_epub(epub_path)
+    # Extract text from the EPUB
+    text = ""
+    chapter_counter = 1
+    for item in book.get_items():
+        if item.get_type() == ebooklib.ITEM_DOCUMENT:
+            content = item.get_body_content().decode('utf-8')
+            chapter_filename = os.path.join(txt_chapter_folder, f"Chapter_{chapter_counter}.txt")
+            soup = BeautifulSoup(content, 'html.parser')
+            paragraphs = [re.sub(r'\s+', ' ', p.get_text(strip=True)) for p in soup.find_all('p')]
+            text = '\n\n'.join(paragraphs).strip()
+            if not text:
+                continue
+            with open(chapter_filename, 'w', encoding='utf-8') as f:
+                chapter_text = text
+                f.write(chapter_text)
+                # Increment chapter counter
+            chapter_counter += 1
