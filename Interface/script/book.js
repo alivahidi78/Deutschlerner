@@ -1,15 +1,3 @@
-function requestPrev() {
-    pywebview.api.request_prev().then(response => {
-        alert(response);
-    });
-}
-
-function requestNext() {
-    pywebview.api.request_next().then(response => {
-        alert(response);
-    });
-}
-
 // Handle word click
 const handleWordClick = (word, index) => {
     pywebview.api.word_clicked(word, index).then(response => {
@@ -50,6 +38,19 @@ function updateText() {
         displayText(response[3])
     });
 }
+
+function requestPrev() {
+    pywebview.api.request_prev().then(response => {
+        alert(response);
+    });
+}
+
+function requestNext() {
+    pywebview.api.request_next().then(response => {
+        alert(response);
+    });
+}
+
 
 function mainMenu() {
     pywebview.api.load_page("main.html");

@@ -4,15 +4,14 @@ import utils
 import os
 
 class API:
-    def open_file(self):
+    def open_file(self, typename, type):
         root = tk.Tk()
         root.withdraw()  # Hide the Tkinter root window
-        file_path = filedialog.askopenfilename()  # Open native file dialog
-        
-        if file_path:
-            with open(file_path, "r", encoding="utf-8") as file:
-                content = file.read()
-            return {"name": file_path, "content": content[:500]}  # Limit content for display
+        file_path = filedialog.askopenfilename(filetypes=[(typename, type)])
+        # if file_path:
+        #     with open(file_path, "r", encoding="utf-8") as file:
+        #         content = file.read()
+        #     return {"name": file_path, "content": content[:500]}  # Limit content for display
         return None
 
     def load_page(self, page):

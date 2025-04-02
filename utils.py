@@ -5,7 +5,7 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 import re
-from db import DB #TODO faulty approach, calling different object
+from db import DB
 
 class DATA:
     window = None
@@ -49,11 +49,9 @@ def pre_process(text):
         index = np.append(index, -1)
         word_list = np.append(word_list, words)
         
-    db = DB() 
-    #TODO faulty approach, calling different object than main
     #TODO check actual words. these contain random bits of punctuation, etc
     #TODO do not highlight words that are not words (numbers etc)
-    highlight = (db.check_word_list(word_list))
+    highlight = (DB.check_word_list(word_list))
     highlight = [not elem for elem in highlight]
     
     return word_list.tolist(), index.tolist(), highlight

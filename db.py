@@ -3,10 +3,13 @@ from dotenv import load_dotenv
 import os
 
 class DB:
-    def __init__(self):
+    
+    path = None
+    
+    def create_db():
         load_dotenv()
-        self.path = os.path.join(os.getenv("DB_FOLDER"), "database.db")
-        conn = sqlite3.connect(self.path)
+        DB.path = os.path.join(os.getenv("DB_FOLDER"), "database.db")
+        conn = sqlite3.connect(DB.path)
         cursor = conn.cursor() 
         # Create words table
         cursor.execute("""
@@ -14,13 +17,14 @@ class DB:
             word TEXT PRIMARY KEY
         );
         """)
-
+        
         # Create books table
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS books (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE NOT NULL,
             directory TEXT NOT NULL,
+            chapter_cnt INTEGER DEFAULT 0,
             last_chapter_read INTEGER DEFAULT 0,
             last_index_read INTEGER DEFAULT 0
         );
@@ -30,8 +34,8 @@ class DB:
         conn.commit()
         conn.close()
         
-    def add_word(self, word):
-        conn = sqlite3.connect(self.path)
+    def add_word(word):
+        conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
         try:
             cursor.execute("INSERT INTO words (word) VALUES (?);", (word,))
@@ -41,16 +45,16 @@ class DB:
             print(f"Word '{word}' already exists.")
         conn.close()
         
-    def word_exists(self, word):
-        conn = sqlite3.connect(self.path)
+    def word_exists(word):
+        conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
         cursor.execute("SELECT 1 FROM words WHERE word = ?;", (word,))
         exists = cursor.fetchone() is not None
         conn.close()
         return exists
     
-    def check_word_list(self, word_list):
-        conn = sqlite3.connect(self.path)
+    def check_word_list(word_list):
+        conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
         
         # Create a dictionary to store results
@@ -69,8 +73,8 @@ class DB:
         # Return list of 1s and 0s in the same order as input
         return [word_existence[word] for word in word_list]
     
-    def delete_word(self, word):
-        conn = sqlite3.connect(self.path)
+    def delete_word(word):
+        conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
         
         cursor.execute("DELETE FROM words WHERE word = ?;", (word,))
@@ -83,8 +87,8 @@ class DB:
         
         conn.close()
         
-    def delete_book(self, name):
-        conn = sqlite3.connect(self.path)
+    def delete_book(name):
+        conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
         
         cursor.execute("DELETE FROM books WHERE name = ?;", (name,))
