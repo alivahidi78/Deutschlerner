@@ -32,7 +32,7 @@ const displayText = (display_data) => {
 };
 
 function updateText() {
-    pywebview.api.get_text().then(response => {
+    pywebview.api.get_chapter().then(response => {
         document.getElementById('title').innerHTML = response[0];
         document.getElementById('page_num').innerHTML = response[1] + '/' + response[2]
         displayText(response[3])
@@ -41,13 +41,13 @@ function updateText() {
 
 function requestPrev() {
     pywebview.api.request_prev().then(response => {
-        alert(response);
+        updateText();
     });
 }
 
 function requestNext() {
     pywebview.api.request_next().then(response => {
-        alert(response);
+        updateText();
     });
 }
 

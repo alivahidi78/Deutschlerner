@@ -7,13 +7,13 @@ function listBooks(){
 }
 
 function importTxt(){
-    pywebview.api.open_file("Text files", "*.txt").then(response => {
-
+    pywebview.api.open_txt().then(response => {
+        alert(response)
     });
 }
 
 function importEpub(){
-    pywebview.api.open_file("Epub files", "*.epub").then(response => {
-
+    pywebview.api.open_epub().then(response => {
+        alert(response)
     });
 }

@@ -8,5 +8,5 @@ from db import DB
 if __name__=="__main__":
     api = API()
     DB.create_db()
-    utils.DATA.window = webview.create_window("Deutschlerner", url=os.path.join("interface", "book.html"), js_api=api, min_size=(800,600))
+    utils.DATA.window = webview.create_window("Deutschlerner", url=os.path.join("interface", "main.html"), js_api=api, min_size=(800,600))
     webview.start()

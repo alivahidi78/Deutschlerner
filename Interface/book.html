@@ -9,11 +9,16 @@
 <body>
     <h1 id="title">Title</h1>
     <h3 id="page_num">X/X</h3>
-    <button class="small_btn" onclick="mainMenu()">Main Menu</button>
-    <button class="small_btn" onclick="updateText()">Refresh Text</button>
-    <br />
-    <button class="small_btn" onclick="requestPrev()">Previous</button>
-    <button class="small_btn" onclick="requestNext()">Next</button>
+    <div class="top-bar">
+        <div class="top-bar-oth">
+            <button class="small_btn" onclick="mainMenu()">Main Menu</button>
+            <button class="small_btn" onclick="updateText()">Refresh Text</button>
+        </div>
+        <div class="top-bar-nav">
+            <button class="small_btn" onclick="requestPrev()">Previous</button>
+            <button class="small_btn" onclick="requestNext()">Next</button>
+        </div>
+    </div>
     <br /><br />
     <div id="text">Loading...</div>
     <br /><br />
