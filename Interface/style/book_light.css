@@ -7,6 +7,33 @@
     background-color: white;
 }
 
+.left-side {
+    max-width: calc(100% - 290px); ;
+}
+
+.dict {
+    padding: 20px 20px 20px 20px;
+    background-color: lightblue;
+    min-width: 250px;
+    max-width: 250px;
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+}
+
+.description {
+    padding: 20px 20px 20px 20px;
+    border: solid black;
+    min-height: 210px;
+    min-width: 210px;
+}
+
+.main-area {
+    display: flex;
+    justify-content: space-between;
+}
+
 .word {
     font-size: 15px;
     margin-right: 5px;

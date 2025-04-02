@@ -56,6 +56,10 @@ function mainMenu() {
     pywebview.api.load_page("main.html");
 }
 
+function bookList() {
+    pywebview.api.load_page("book-list.html");
+}
+
 window.onload = function () {
     // Wait for a brief moment before calling the function
     setTimeout(function () {

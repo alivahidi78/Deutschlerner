@@ -38,15 +38,26 @@ def get_test_text():
     DATA.chapter = 1
     return DATA.title, DATA.display_data, 1, 1
 
-def get_chapter():
-    load_dotenv()
-    if not DATA.book_data:
-        return get_test_text()
+def set_book_data(book_data):
+    DATA.book_data = book_data
     DATA.book_id = DATA.book_data[0]
     DATA.title = DATA.book_data[1]
     DATA.chapter_count = DATA.book_data[2]
-    if DATA.chapter == -1:
-        DATA.chapter = DATA.book_data[3]
+    DATA.chapter = DATA.book_data[3]
+    DB.set_book_as_reading(DATA.book_id)
+    
+def get_chapter():
+    load_dotenv()
+    if not DATA.book_data:
+        try:
+            last_id = DB.get_last_opened_book()
+            last_book_data = DB.find_book_by_id(last_id)
+            if last_book_data:
+               set_book_data(last_book_data)
+            else:
+                return get_test_text()
+        except:
+            return get_test_text()
     txt_path = os.getenv("TXT_OUTPUT_FOLDER")
     file_path = os.path.join(txt_path, str(DATA.book_id), f"{DATA.chapter}.txt")
     DATA.text = read_txt(file_path)
@@ -55,13 +66,17 @@ def get_chapter():
 
 def next_chapter():
     if DATA.chapter < DATA.chapter_count:
-        DATA.chapter+=1
+        new_chapter = DATA.chapter + 1
+        DATA.chapter = new_chapter
+        DB.update_book(DATA.title, "last_chapter_read", new_chapter)
     else:
         pass
 
 def prev_chapter():
     if DATA.chapter > 1:
-        DATA.chapter-=1
+        new_chapter = DATA.chapter - 1
+        DATA.chapter = new_chapter
+        DB.update_book(DATA.title, "last_chapter_read", new_chapter)
     else:
         pass
     

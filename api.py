@@ -1,6 +1,7 @@
 import utils
 import os
 import webview
+from db import DB
 
 
 class API:
@@ -43,7 +44,7 @@ class API:
         return title, page, outof, display_data
     
     def set_book_data(self, book_data):
-        utils.DATA.book_data = book_data
+        utils.set_book_data(book_data)
 
     def word_clicked(self, word, index):
         print(f"{index}: {word}")

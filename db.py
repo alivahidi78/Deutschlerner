@@ -31,6 +31,13 @@ class DB:
         );
         """)
         
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS last_opened_book (
+            id INTEGER PRIMARY KEY,
+            book_id INTEGER NOT NULL
+        );
+        """)
+        
         DB.refresh_books()
 
         # Commit and close connection
@@ -47,7 +54,7 @@ class DB:
         except sqlite3.IntegrityError:
             print(f"Word '{word}' already exists.")
         conn.close()
-        
+       
     def word_exists(word):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
@@ -55,7 +62,7 @@ class DB:
         exists = cursor.fetchone() is not None
         conn.close()
         return exists
-    
+  
     def check_word_list(word_list):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
@@ -75,7 +82,7 @@ class DB:
         
         # Return list of 1s and 0s in the same order as input
         return [word_existence[word] for word in word_list]
-    
+ 
     def delete_word(word):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
@@ -89,7 +96,7 @@ class DB:
             print(f"Word '{word}' not found.")
         
         conn.close()
-        
+  
     def add_book(name, chapter_cnt, last_chapter_read=1, last_index_read=0):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
@@ -106,7 +113,7 @@ class DB:
         conn.close()
         
         return id
-    
+ 
     def update_book(name, field, new_value):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
@@ -126,12 +133,11 @@ class DB:
         conn.commit()
         
         if cursor.rowcount > 0:
-            print(f"Book '{name}' updated successfully. {field} set to {new_value}.")
+            pass
         else:
             print(f"Book '{name}' not found.")
         conn.close()
-            
-
+        
     def delete_book(name):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
@@ -163,7 +169,7 @@ class DB:
         else:
             # Print out the details of each book
             return books
-        
+   
     def refresh_books():
         books = DB.list_books()
         if not books:
@@ -173,7 +179,53 @@ class DB:
             folder_path = os.path.join(DB.txt_path ,folder)
             if not os.path.exists(folder_path):
                 DB.delete_book(book[1])
-            
+             
+    def find_book_by_id(book_id):
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        # Query to find the book by its ID
+        cursor.execute("SELECT * FROM books WHERE id = ?;", (book_id,))
+        book = cursor.fetchone()
+        conn.close()
+        return book
+         
+    def set_book_as_reading(book_id):
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        
+        # First, check if there is any existing last opened book
+        cursor.execute("SELECT * FROM last_opened_book LIMIT 1;")
+        result = cursor.fetchone()
+        
+        if result:
+            # Update the existing record
+            cursor.execute("""
+                UPDATE last_opened_book
+                SET book_id = ? WHERE id = 1;
+            """, (book_id,))
+        else:
+            # Insert a new record as no book has been opened yet
+            cursor.execute("""
+                INSERT INTO last_opened_book (book_id)
+                VALUES (?);
+            """, (book_id,))
+        
+        conn.commit()
+        conn.close()
+        
+    def get_last_opened_book():
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM last_opened_book LIMIT 1;")
+        result = cursor.fetchone()
+        conn.close()
+        
+        if result:
+            return result[1]
+        else:
+            print("No book has been opened yet.")
+            return None
+
     
         
         
