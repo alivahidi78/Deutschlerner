@@ -1,6 +1,7 @@
 import utils
 import os
 import webview
+import traceback
 from db import DB
 
 
@@ -34,6 +35,7 @@ class API:
                 utils.import_epub(p)
             return "File imported."
         except Exception as e:
+            print(traceback.format_exc())
             return f"An error occurred: {e}"
 
     def load_page(self, page):

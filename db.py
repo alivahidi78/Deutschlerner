@@ -1,6 +1,7 @@
 import sqlite3
 from dotenv import load_dotenv
 import os
+import pandas as pd
 
 class DB:
     
@@ -38,7 +39,7 @@ class DB:
         );
         """)
         
-        DB.refresh_books()
+        # DB.refresh_books()
 
         # Commit and close connection
         conn.commit()
@@ -225,6 +226,19 @@ class DB:
         else:
             print("No book has been opened yet.")
             return None
+        
+    def write_chapter_to_db(df, book_id, chapter_id):
+        conn = sqlite3.connect(DB.path)
+        df.to_sql(f"book_{book_id}_{chapter_id}", conn, if_exists="fail")
+        conn.commit()
+        conn.close()
+        
+    def read_chapter_from_db(book_id, chapter_id):
+        conn = sqlite3.connect(DB.path)
+        df_from_sql = pd.read_sql(f'SELECT * FROM "book_{book_id}_{chapter_id}"', conn)
+        conn.close()     
+        return df_from_sql
+
 
     
         

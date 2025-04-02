@@ -5,37 +5,60 @@ const handleWordClick = (word, index) => {
     });
 };
 
+const isPrePunctuation = (str) => {
+    const punctuationRegex = /^[“«!.,?;:)}\]$%]+$/;
+    return punctuationRegex.test(str);
+}
+
+const isPostPunctuation = (str) => {
+    const punctuationRegex = /^[„»({[]+$/;
+    return punctuationRegex.test(str);
+}
+
+const isAmbPunctuation = (str) => {
+    const punctuationRegex = /^['"-<>@#^&*|\\\/=+_`~]+$/;
+    return punctuationRegex.test(str);
+}
+
 const displayText = (display_data) => {
-    // TODO better structure
-    words = display_data[0]
-    index = display_data[1]
-    highlight = display_data[2]
     const textContainer = document.getElementById('text');
     textContainer.innerHTML = ''; // Clear previous content
-
-    for (let i = 0; i < words.length; i++) {
+    display_data = JSON.parse(display_data)
+    previous_word = null
+    display_data.forEach(element => {
+        let text = element["word"]
         const wordElement = document.createElement('span');
-        if (highlight[i] == true) {
-            wordElement.className = 'highlighted_word';
-        } else {
-            wordElement.className = 'word';
-        }
-        wordElement.innerText = words[i];
-        wordElement.onclick = () => handleWordClick(words[i], index[i]);
-        if (words[i] == '\n'){
+        if (text.trim() === ""){
             newline = document.createElement("div");
-            newline.innerText = "\n";
+            newline.innerText = "\n\n";
             textContainer.appendChild(newline);
         }
-        textContainer.appendChild(wordElement)
-    };
+        else if (isPrePunctuation(text)){
+            wordElement.className = 'word';
+            wordElement.innerText = `${text}`;
+            textContainer.appendChild(wordElement)
+        } 
+        else {
+            wordElement.className = 'word';
+            // if (highlight[i] == true) {
+                //     wordElement.className = 'highlighted_word';
+                // }
+            if (isPostPunctuation(previous_word))
+                wordElement.innerText = text;
+            else
+                wordElement.innerText = ` ${text}`;
+            wordElement.onclick = () => handleWordClick(text, 5);
+            textContainer.appendChild(wordElement)
+        }
+        previous_word = text
+    }); 
 };
 
 function updateText() {
     pywebview.api.get_chapter().then(response => {
         document.getElementById('title').innerHTML = response[0];
-        document.getElementById('page_num').innerHTML = response[1] + '/' + response[2]
-        displayText(response[3])
+        document.getElementById('page_num').innerHTML = response[1] + '/' + response[2];
+        displayText(response[3]);
     });
 }
 

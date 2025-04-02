@@ -36,19 +36,18 @@
 
 .word {
     font-size: 15px;
-    margin-right: 5px;
+    white-space: pre;
     cursor: pointer;
     display: inline-block;
-    margin-right: 5px;
 }
 
 .highlighted_word {
     font-size: 15px;
-    margin-right: 5px;
+    white-space: pre;
     cursor: pointer;
     display: inline-block;
-    margin-right: 5px;
-    color:rgb(43, 105, 172);
+    /* color:rgb(43, 105, 172); */
+    color: red;
 }
 
 /* .top-bar {
