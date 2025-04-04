@@ -19,6 +19,7 @@ class DATA:
     chapter_count = -1
     book_id = -1
     last_index = 0
+    chapter_df = None
 
 def read_txt(path):
     try:
@@ -36,7 +37,7 @@ def get_test_text():
     load_dotenv()
     DATA.title = os.getenv("TEST_TITLE")
     DATA.text = read_txt(os.getenv("TEST_FILE_PATH"))
-    DATA.display_data = list(prepare_text(DATA.text))
+    DATA.display_data = list(prepare_data(DATA.text))
     DATA.chapter = 1
     return DATA.title, DATA.display_data, 1, 1
 
@@ -61,9 +62,10 @@ def get_chapter():
             return get_test_text()
         
     df = DB.read_chapter_from_db(DATA.book_id, DATA.chapter)
-    # DATA.display_data = list(prepare_text(DATA.text))
-    DATA.display_data = df[["word", "variation"]].to_json(orient="records")
-    return DATA.title, DATA.display_data, DATA.chapter_count, DATA.chapter
+    DATA.chapter_df = df
+    DATA.display_data = prepare_data(df)
+    json_data = DATA.display_data.reset_index().to_json(orient="records")
+    return DATA.title, json_data, DATA.chapter_count, DATA.chapter
 
 def next_chapter():
     if DATA.chapter < DATA.chapter_count:
@@ -81,25 +83,32 @@ def prev_chapter():
     else:
         pass
     
-def prepare_text(text):
-    paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
-    word_list = np.empty(0)
-    index = np.empty(0)
-    word_count = 0
-
-    for pa in paragraphs:
-        words = [w.strip() for w in pa.split(" ") if w.strip()]
-        index = np.append(index, np.arange(word_count, word_count + len(words)))
-        word_count = word_count + len(words)
-        words.append("\n")
-        index = np.append(index, -1)
-        word_list = np.append(word_list, words)
-        
+def prepare_data(df):        
     #TODO do not highlight words that are not words (numbers etc)
-    highlight = (DB.check_word_list(word_list))
-    highlight = [not elem for elem in highlight]
-    
-    return word_list.tolist(), index.tolist(), highlight
+    # l_check = DB.check_word_list(df["lemma"].tolist())
+    # v_check = DB.check_word_list(df["variation"].tolist())
+    # highlight = [2 if (b1 and b2) else 1 if (b1 or b2) else 0 
+    # for b1, b2 in zip(list1, list2)]
+
+    lem_status_list = DB.get_status_for_words(list(df["lemma"]))
+    var_status_list = DB.get_status_for_words(list(df["variation"]))
+    highlight = []
+    for v1, v2 in zip(lem_status_list, var_status_list):
+        if v1 is None and v2 is None:
+            highlight.append("new")
+        elif (v1 == 0 and v2 == 0) or (v1 is None and v2 == 0) or (v2 is None and v1 == 0) or (v2 == 1 and v1 is None):
+            highlight.append("unknown")
+        elif (v1 == 1 and v2 == 0) or (v1 == 0 and v2 == 1):
+            highlight.append("half")
+        elif (v1 == 1 and v2 == 1) or (v1 == 1 and v2 is None):
+            highlight.append("known")
+        else:
+            raise ValueError("Critical Error W3")
+
+    df["highlight"] = highlight
+    # highlight = df[["word", "highlight"]] TODO fix
+    highlight = df
+    return highlight
 
 def epub2txt(epub_object, book_id):
     # Load EPUB file
@@ -151,4 +160,16 @@ def import_txt(path):
     
 def get_book_list():
     return DB.list_books()
+
+def get_word_info(index):
+    lemma = DATA.chapter_df.loc[index, "lemma"]
+    variation = DATA.chapter_df.loc[index, "variation"]
+    word = DATA.chapter_df.loc[index, "word"]
+    return word, lemma, variation
+    
+def save_ignored_words():
+    df = DATA.display_data
+    #TODO save variations as well 
+    filtered_values = set(df.loc[(df["highlight"]) == "new", 'lemma'])
+    DB.add_word_list(list(filtered_values))
     

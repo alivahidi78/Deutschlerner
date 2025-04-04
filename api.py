@@ -50,12 +50,30 @@ class API:
 
     def word_clicked(self, word, index):
         print(f"{index}: {word}")
-        return f"{index}: {word}"
+        # utils.DATA.unknown_chapter_words.append(lemma)
+        w, lemma, variation = utils.get_word_info(index)
+        assert word == w
+        return [index, lemma, variation]
+    
+    def save_word(self, index, word):
+        try:
+            DB.add_word(word, replace=True)
+            return True
+        except Exception as e:
+            raise e
+    
+    def save_word_unknown(self, index, word):
+        try:
+            DB.add_word(word, 0, True)
+            return True
+        except Exception as e:
+            raise e
     
     def request_prev(self):
         utils.prev_chapter()
         return f"Previous page requested"
     
     def request_next(self):
+        utils.save_ignored_words()
         utils.next_chapter()
         return f"Next page requested"

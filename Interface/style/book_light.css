@@ -22,6 +22,14 @@
     bottom: 10px;
 }
 
+.search {
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 50px;
+    max-height: 50px;
+
+}
+
 .description {
     padding: 20px 20px 20px 20px;
     border: solid black;
@@ -34,21 +42,38 @@
     justify-content: space-between;
 }
 
-.word {
+.unknown_word {
+    font-size: 15px;
+    white-space: pre;
+    cursor: pointer;
+    display: inline-block;
+    color:rgb(221, 43, 43);
+}
+
+.known_word {
     font-size: 15px;
     white-space: pre;
     cursor: pointer;
     display: inline-block;
 }
 
-.highlighted_word {
+.new_word {
     font-size: 15px;
     white-space: pre;
     cursor: pointer;
     display: inline-block;
-    /* color:rgb(43, 105, 172); */
-    color: red;
+    color:rgb(68, 44, 174);
 }
+
+.half_known_word {
+    font-size: 15px;
+    white-space: pre;
+    cursor: pointer;
+    display: inline-block;
+    color:rgb(250, 243, 21);
+}
+
+
 
 /* .top-bar {
     position: fixed;

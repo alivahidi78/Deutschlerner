@@ -17,7 +17,8 @@ class DB:
         # Create words table
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS words (
-            word TEXT PRIMARY KEY
+            word TEXT PRIMARY KEY,
+            status INTEGER DEFAULT 1
         );
         """)
         
@@ -45,17 +46,21 @@ class DB:
         conn.commit()
         conn.close()
         
-    def add_word(word):
+        
+    def add_word_list(word_list, status=1, replace=False):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
-        try:
-            cursor.execute("INSERT INTO words (word) VALUES (?);", (word,))
-            conn.commit()
-            print(f"Word '{word}' added successfully.")
-        except sqlite3.IntegrityError:
-            print(f"Word '{word}' already exists.")
+        if not replace:
+            cursor.executemany("INSERT OR IGNORE INTO words (word, status) VALUES (?, ?);", [(word, status) for word in word_list])
+        else:
+            cursor.executemany("REPLACE INTO words (word, status) VALUES (?, ?);", [(word, status) for word in word_list])
+        conn.commit()
+        print(f"{len(word_list)} word(s) added successfully.")
         conn.close()
        
+    def add_word(word, status=1, replace=False):
+        DB.add_word_list([word,], status=status, replace=replace)
+        
     def word_exists(word):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
@@ -63,27 +68,24 @@ class DB:
         exists = cursor.fetchone() is not None
         conn.close()
         return exists
-  
-    def check_word_list(word_list):
+    
+    def get_status_for_words(word_list):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
-        
-        # Create a dictionary to store results
-        word_existence = {word: False for word in word_list}  # Default all to 0
 
-        # Query database for words that exist
-        query = f"SELECT word FROM words WHERE word IN ({','.join(['?']*len(word_list))})"
+        # Build the query with the appropriate number of placeholders
+        values = [None] * len(word_list) 
+        
+        placeholders = ','.join(['?'] * len(word_list))
+        query = f"SELECT word, status FROM words WHERE word IN ({placeholders})"
+
         cursor.execute(query, word_list)
-        
-        # Mark words that exist as 1
-        for (word,) in cursor.fetchall():
-            word_existence[word] = True
-
+        results = dict(cursor.fetchall())
         conn.close()
         
-        # Return list of 1s and 0s in the same order as input
-        return [word_existence[word] for word in word_list]
- 
+        status_list = [results.get(word, None) for word in word_list]
+        return status_list
+        
     def delete_word(word):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()

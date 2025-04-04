@@ -1,16 +1,46 @@
 // Handle word click
+let word_index = -1;
+
 const handleWordClick = (word, index) => {
+    word_index = index
+    const textarea = document.getElementById('search');
     pywebview.api.word_clicked(word, index).then(response => {
-        alert(response);
+        let lemma = response[1]
+        let variation = response[2]
+        if (variation)
+            textarea.value = variation
+        else
+            textarea.value = lemma
     });
 };
 
-const isPrePunctuation = (str) => {
+const saveWord = () => {
+    const textarea = document.getElementById('search');
+    word = textarea.value;
+    pywebview.api.save_word(word_index, word).then(response => {
+        if(!response)
+            alert(response);
+        updateText();
+    });
+}
+
+const saveWordUnknown = () => {
+    const textarea = document.getElementById('search');
+    word = textarea.value;
+    pywebview.api.save_word_unknown(word_index, word).then(response => {
+        if(!response)
+            alert(response);
+        updateText();
+    });
+}
+
+
+const isRightPunctuation = (str) => {
     const punctuationRegex = /^[“«!.,?;:)}\]$%]+$/;
     return punctuationRegex.test(str);
 }
 
-const isPostPunctuation = (str) => {
+const isLeftPunctuation = (str) => {
     const punctuationRegex = /^[„»({[]+$/;
     return punctuationRegex.test(str);
 }
@@ -23,35 +53,43 @@ const isAmbPunctuation = (str) => {
 const displayText = (display_data) => {
     const textContainer = document.getElementById('text');
     textContainer.innerHTML = ''; // Clear previous content
-    display_data = JSON.parse(display_data)
     previous_word = null
+    display_data = JSON.parse(display_data)
     display_data.forEach(element => {
+        let index = element["index"]
         let text = element["word"]
+        let highlight = element["highlight"]
         const wordElement = document.createElement('span');
-        if (text.trim() === ""){
+        if (text.trim() === "") {
             newline = document.createElement("div");
-            newline.innerText = "\n\n";
+            newline.innerText = "\n";
             textContainer.appendChild(newline);
         }
-        else if (isPrePunctuation(text)){
+        else if (isRightPunctuation(text)) {
             wordElement.className = 'word';
             wordElement.innerText = `${text}`;
             textContainer.appendChild(wordElement)
-        } 
+        }
         else {
-            wordElement.className = 'word';
-            // if (highlight[i] == true) {
-                //     wordElement.className = 'highlighted_word';
-                // }
-            if (isPostPunctuation(previous_word))
+            if (highlight == "new")
+                wordElement.className = 'new_word';
+            else if (highlight == "known")
+                wordElement.className = 'known_word';
+            else if (highlight == "half")
+                wordElement.className = 'half_known_word';            
+            else if (highlight == "unknown")
+                wordElement.className = 'unknown_word';
+
+            if (isLeftPunctuation(previous_word))
                 wordElement.innerText = text;
             else
                 wordElement.innerText = ` ${text}`;
-            wordElement.onclick = () => handleWordClick(text, 5);
+
+            wordElement.onclick = () => handleWordClick(text, index);
             textContainer.appendChild(wordElement)
         }
         previous_word = text
-    }); 
+    });
 };
 
 function updateText() {
@@ -88,5 +126,6 @@ window.onload = function () {
     setTimeout(function () {
         updateText();
     }, 200);
-};
 
+    setInterval(updateText, 30000);
+};

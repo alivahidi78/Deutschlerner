@@ -27,11 +27,14 @@
             <div id="text">Loading...</div>
         </div>
         <div class="dict">
-            <textarea>No Words Selected</textarea>
+            <textarea class="search", id="search" placeholder="No Words Selected"></textarea>
             <button class="small_btn" onclick="">Look Up</button>
-            <div class="description"></div>
+            <button class="small_btn" onclick="">Google</button>
             <br /><br />
-            <button class="small_btn" onclick="">I know this word</button>
+            <div class="description"></div>
+            <br />
+            <button class="small_btn" onclick="saveWord()">I know this word</button>
+            <button class="small_btn" onclick="saveWordUnknown()">I don't know this word</button>
         </div>
     </div>
 
