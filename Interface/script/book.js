@@ -34,6 +34,17 @@ const saveWordUnknown = () => {
     });
 }
 
+const forgetWord = () => {
+    const textarea = document.getElementById('search');
+    word = textarea.value;
+    pywebview.api.forget_word(word_index, word).then(response => {
+        if(!response)
+            alert(response);
+        updateText();
+    });
+}
+
+
 
 const isRightPunctuation = (str) => {
     const punctuationRegex = /^[“«!.,?;:)}\]$%]+$/;

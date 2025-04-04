@@ -68,6 +68,13 @@ class API:
             return True
         except Exception as e:
             raise e
+        
+    def forget_word(self, index, word):
+        try:
+            DB.delete_word(word)
+            return True
+        except Exception as e:
+            raise e
     
     def request_prev(self):
         utils.prev_chapter()

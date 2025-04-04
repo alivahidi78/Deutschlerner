@@ -1,24 +1,25 @@
-@import "main_light.css";
-
+@import "main_dark.css";
 #text {
-    border: 1px solid white;
-    padding: 20px 20px 20px 20px;
-    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
 }
 
 .left-side {
-    max-width: calc(100% - 290px); ;
+    max-width: calc(100% - 290px);
 }
 
 .dict {
-    padding: 20px 20px 20px 20px;
-    background-color: lightblue;
+    padding: 20px;
+    background-color: #2c3e50;
     min-width: 250px;
     max-width: 250px;
     position: fixed;
     right: 10px;
     top: 10px;
     bottom: 10px;
+    color: #ffffff;
 }
 
 .search {
@@ -26,12 +27,16 @@
     max-width: 250px;
     min-height: 50px;
     max-height: 50px;
-
+    background-color: #34495e;
+    color: #fff;
+    border: 1px solid #777;
 }
 
 .description {
-    padding: 20px 20px 20px 20px;
-    border: solid black;
+    padding: 20px;
+    border: 1px solid #888;
+    background-color: #2a2a2a;
+    color: #f5f5f5;
     min-height: 210px;
     min-width: 210px;
 }
@@ -41,12 +46,12 @@
     justify-content: space-between;
 }
 
-
 .known_word {
     font-size: 15px;
     white-space: pre;
     cursor: pointer;
     display: inline-block;
+    color: #ccc;
 }
 
 .new_word {
@@ -54,7 +59,7 @@
     white-space: pre;
     cursor: pointer;
     display: inline-block;
-    color:rgb(68, 44, 174);
+    color: rgb(150, 150, 230);
 }
 
 .unknown_word {
@@ -62,8 +67,8 @@
     white-space: pre;
     cursor: pointer;
     display: inline-block;
-    color:rgb(6, 189, 76);
-    font-weight: bold;
+    color: rgb(50, 180, 110);
+
 }
 
 .half_known_word {
@@ -71,21 +76,5 @@
     white-space: pre;
     cursor: pointer;
     display: inline-block;
-    color:rgb(5, 134, 54);
-    font-weight: bold;
+    color: rgb(57, 235, 128);
 }
-
-
-
-/* .top-bar {
-    position: fixed;
-    top: 20px;  
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%; 
-    max-width: 600px;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-} */
