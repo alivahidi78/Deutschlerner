@@ -113,7 +113,15 @@ class DB:
             print(f"Word '{word}' not found.")
         
         conn.close()
-  
+        
+    def reset_words():
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM words")
+        conn.commit()
+        cursor.execute("VACUUM")
+        conn.close()
+        
     def add_book(name, chapter_cnt, last_chapter_read=1, last_index_read=0):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
@@ -215,7 +223,7 @@ class DB:
         conn.close()
         return book
          
-    def set_book_as_reading(book_id):
+    def set_last_opened_book(book_id):
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor()
         

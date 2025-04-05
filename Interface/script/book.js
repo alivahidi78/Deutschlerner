@@ -22,7 +22,7 @@ const saveWord = () => {
     const textarea = document.getElementById('search');
     word = textarea.value;
     pywebview.api.save_word(word_index, word).then(response => {
-        if(!response)
+        if (!response)
             alert(response);
         updateText();
     }).catch(error => {
@@ -34,7 +34,7 @@ const saveWordUnknown = () => {
     const textarea = document.getElementById('search');
     word = textarea.value;
     pywebview.api.save_word_unknown(word_index, word).then(response => {
-        if(!response)
+        if (!response)
             alert(response);
         updateText();
     }).catch(error => {
@@ -46,7 +46,7 @@ const forgetWord = () => {
     const textarea = document.getElementById('search');
     word = textarea.value;
     pywebview.api.forget_word(word_index, word).then(response => {
-        if(!response)
+        if (!response)
             alert(response);
         updateText();
     }).catch(error => {
@@ -95,7 +95,7 @@ const displayText = (display_data) => {
             else if (highlight == "known")
                 wordElement.className = 'known_word';
             else if (highlight == "half")
-                wordElement.className = 'half_known_word';            
+                wordElement.className = 'half_known_word';
             else if (highlight == "unknown")
                 wordElement.className = 'unknown_word';
 
@@ -137,6 +137,18 @@ function requestNext() {
     });
 }
 
+function requestNextSave() {
+    pywebview.api.save_ignored_words().then(response => {
+        pywebview.api.request_next().then(response => {
+            updateText();
+        }).catch(error => {
+            alert(`Error: ${error}`);
+        });
+    }).catch(error => {
+        alert(`Error: ${error}`);
+    });;
+}
+
 
 function mainMenu() {
     pywebview.api.load_page("main.html");
@@ -165,7 +177,7 @@ function googleTranslate() {
     });
 }
 
-function dictTranslate(){
+function dictTranslate() {
     const textarea = document.getElementById('search');
     word = textarea.value;
     const desc = document.getElementById('desc');

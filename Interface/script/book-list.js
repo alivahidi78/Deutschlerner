@@ -30,8 +30,9 @@ function updateList() {
                 });
             };
             let del = function () {
-                book_to_delete = element
-                showOverlay()
+                book_to_delete = element;
+                document.getElementById("book_name").innerHTML = book_to_delete[1];
+                showOverlay();
             }
             generateButton(element[1], onclick, del);
         })
@@ -42,7 +43,6 @@ function updateList() {
 
 function showOverlay() {
     document.getElementById("overlay").style.display = "flex";
-    document.getElementById("book_name").innerHTML = book_to_delete[1];
 }
 
 function hideOverlay() {
@@ -51,7 +51,7 @@ function hideOverlay() {
 
 function confirmAction() {
     pywebview.api.delete_book(book_to_delete).catch(error => {
-        alert(`Error: ${error}`)
+        alert(`Error: ${error}`);
     }).finally(() => {
         hideOverlay();
         book_to_delete = null;

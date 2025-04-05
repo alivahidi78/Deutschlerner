@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <link id="theme-link" rel="stylesheet" href="style/default-dark.css">
 </head>
+
 <body>
 
     <div class="main-area">
@@ -20,14 +22,15 @@
                 </div>
                 <div class="top-bar-nav">
                     <button class="small_btn" onclick="requestPrev()">Previous</button>
-                    <button class="small_btn" onclick="requestNext()">Next</button>
+                    <button class="small_btn" onclick="requestNextSave()">Next</button>
+                    <button class="small_btn" onclick="requestNext()">Skip</button>
                 </div>
             </div>
             <br /><br />
             <div id="text">Loading...</div>
         </div>
         <div class="dict">
-            <textarea class="search", id="search" placeholder="No Words Selected"></textarea>
+            <textarea class="search" , id="search" placeholder="No Words Selected"></textarea>
             <button class="small_btn" onclick="dictTranslate()">Look Up</button>
             <button class="small_btn" onclick="googleTranslate()">Google</button>
             <br /><br />
@@ -44,7 +47,9 @@
 
     <br /><br />
     <button class="small_btn" onclick="requestPrev()">Previous</button>
-    <button class="small_btn" onclick="requestNext()">Next</button>
+    <button class="small_btn" onclick="requestNextSave()">Next</button>
+    <button class="small_btn" onclick="requestNext()">Skip</button>
     <script src="script/book.js"></script>
 </body>
+
 </html>

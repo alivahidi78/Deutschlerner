@@ -7,8 +7,16 @@
     <link id="theme-link" rel="stylesheet" href="style/default-dark.css">
 </head>
 <body>
+    <div id="overlay" class="overlay">
+        <div class="confirmation-window">
+            <p>Are you sure?</p>
+            <p>This action cannot be undone.</p>
+            <button class="small_btn_red" onclick="confirmAction()">Reset</button>
+            <button class="small_btn" onclick="cancelAction()">Cancel</button>
+        </div>
+    </div>
     <button class="btn" onclick="mainMenu()">Main Menu</button>
-    <button class="btn" onclick="" disabled>Reset User Data</button>
+    <button class="btn" onclick="resetWords()">Reset the words database</button>
     <label for="themeMenu">Change Theme:</label>
     <select id="themeMenu" onchange="changeTheme()">
         <!-- TODO get data from elsewhere -->

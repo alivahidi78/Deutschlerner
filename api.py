@@ -92,12 +92,17 @@ class API:
         return f"Previous page requested"
     
     def request_next(self):
-        utils.save_ignored_words()
         utils.next_chapter()
         return f"Next page requested"
     
+    def save_ignored_words(self):
+        utils.save_ignored_words()
+    
     def delete_book(self, data):
         return utils.delete_book(data)
+    
+    def reset_words(self):
+        return DB.reset_words()
     
     def get_theme(self):
         active_theme = DB.get_active_theme()

@@ -47,7 +47,7 @@ def set_book_data(book_data):
     DATA.title = DATA.book_data[1]
     DATA.chapter_count = DATA.book_data[2]
     DATA.chapter = DATA.book_data[3]
-    DB.set_book_as_reading(DATA.book_id)
+    DB.set_last_opened_book(DATA.book_id)
     
 def get_chapter():
     if not DATA.book_data:
