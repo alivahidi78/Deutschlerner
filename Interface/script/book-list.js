@@ -65,7 +65,7 @@ function cancelAction() {
 }
 
 window.onload = function () {
-    document.getElementById("overlay").style.display = "none";
+    hideOverlay();
     // Wait for a brief moment before calling the function
     setTimeout(function () {
         updateList();

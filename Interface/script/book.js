@@ -146,15 +146,6 @@ function bookList() {
     pywebview.api.load_page("book-list.html");
 }
 
-window.onload = function () {
-    // Wait for a brief moment before calling the function
-    setTimeout(function () {
-        updateText();
-    }, 200);
-
-    setInterval(updateText, 30000);
-};
-
 function googleTranslate() {
     const textarea = document.getElementById('search');
     word = textarea.value;
@@ -190,3 +181,12 @@ function dictTranslate(){
         alert(`Error: ${error}`);
     });
 }
+
+window.onload = function () {
+    // Wait for a brief moment before calling the function
+    setTimeout(function () {
+        updateText();
+    }, 200);
+
+    setInterval(updateText, 30000);
+};

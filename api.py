@@ -40,6 +40,8 @@ class API:
 
     def load_page(self, page):
         utils.DATA.window.load_url(os.path.join("interface", page))
+        loading_code = utils.get_loading_js()
+        utils.DATA.window.evaluate_js(loading_code)
 
     def get_chapter(self):
         title, display_data, outof, page = utils.get_chapter()
@@ -96,3 +98,13 @@ class API:
     
     def delete_book(self, data):
         return utils.delete_book(data)
+    
+    def get_theme(self):
+        active_theme = DB.get_active_theme()
+        if(active_theme == 0): #TODO
+            return "default-light"
+        else:
+            return "default-dark"
+    
+    def change_theme(self, option):
+        DB.set_active_theme(option)

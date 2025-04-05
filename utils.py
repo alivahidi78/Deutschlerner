@@ -197,3 +197,10 @@ def translate(text):
     article = Dictionary.get_article(text)
     trans = Dictionary.get_translation(text)
     return [article, trans]
+
+def get_loading_js():
+    load_dotenv()
+    js_path = os.getenv("LOADING_JS_PATH")
+    with open(js_path, 'r') as js_file:
+        return js_file.read()
+    

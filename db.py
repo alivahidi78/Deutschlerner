@@ -39,8 +39,22 @@ class DB:
         );
         """)
         
-        # DB.refresh_books()
-
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS active_theme (
+            id INTEGER PRIMARY KEY,
+            theme_id INTEGER DEFAULT 0
+        );
+        """)
+        
+        cursor.execute("SELECT * FROM active_theme LIMIT 1;")
+        result = cursor.fetchone()
+        
+        if not result:
+            cursor.execute(f"""
+                INSERT INTO active_theme (theme_id)
+                VALUES (0);
+            """)
+        
         # Commit and close connection
         conn.commit()
         conn.close()
@@ -256,6 +270,38 @@ class DB:
         cursor.execute(f"DROP TABLE IF EXISTS book_{book_id}_{chapter_id}")
         conn.commit()
         conn.close()
+        
+    def set_active_theme(id):
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT * FROM active_theme LIMIT 1;")
+        result = cursor.fetchone()
+        
+        if result:
+            # Update the existing record
+            cursor.execute("""
+                UPDATE active_theme
+                SET theme_id = ? WHERE id = 1;
+            """, (id,))
+        else:
+            cursor.execute("""
+                INSERT INTO active_theme (theme_id)
+                VALUES (?);
+            """, (id,))
+        
+        conn.commit()
+        conn.close()
+    
+    def get_active_theme():
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT theme_id FROM active_theme ORDER BY id DESC LIMIT 1")
+        theme_id = cursor.fetchone()[0]
+        conn.close()
+        return theme_id
+        
+        
     
 class Dictionary:
     
