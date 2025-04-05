@@ -311,7 +311,7 @@ class Dictionary:
     def get_translation(text):
         conn = sqlite3.connect(Dictionary.dict_path)
         cursor = conn.cursor()
-        query = "SELECT trans_list FROM simple_translation WHERE written_rep = ?"
+        query = "SELECT trans_list FROM simple_translation WHERE LOWER(written_rep) = LOWER(?)"
         cursor.execute(query, (text,))
         result = cursor.fetchone()  # Fetch the first result
         conn.close()
