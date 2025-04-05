@@ -85,8 +85,7 @@ def prev_chapter():
         pass
     
 def prepare_data(df):        
-    #TODO do not highlight words that are not words (numbers etc)
-    #TODO treat particles and main parts differently so they stay in sync
+    pos = df["pos"].tolist()
     lem_status_list = DB.get_status_for_words(list(df["lemma"]))
     var_status_list = DB.get_status_for_words(list(df["variation"]))
     mapping = {
@@ -98,8 +97,10 @@ def prepare_data(df):
     df["h_lem"] = [mapping.get(item, item) for item in lem_status_list]
     df["h_var"] = [mapping.get(item, item) for item in var_status_list]
     highlight = []
-    for lem, var in zip(lem_status_list, var_status_list):
-        if (var == "empty" and lem is None) or (var is None):
+    for pos, lem, var in zip(pos, lem_status_list, var_status_list):
+        if (pos == "NUM" or pos == "PUNCT"):
+            highlight.append("known")
+        elif (var == "empty" and lem is None) or (var is None):
             highlight.append("new")
         elif (var == "empty" and lem == 1) or (var == 1):
             highlight.append("known")

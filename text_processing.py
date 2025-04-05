@@ -6,6 +6,7 @@ from deep_translator import GoogleTranslator
 def preprocess(text):
     words = []
     lemmas = []
+    pos = []
     separable = []
     nlp = spacy.load("de_core_news_md")
     doc = nlp(text)
@@ -13,6 +14,7 @@ def preprocess(text):
     for token in doc:
         words.append(token.text)
         lemmas.append(token.lemma_)
+        pos.append(token.pos_)
         if token.dep_ == "svp": 
             # Found a separable verb prefix (like "auf" in "stand auf")
             full_verb = token.text + token.head.lemma_
@@ -23,6 +25,7 @@ def preprocess(text):
     df = pd.DataFrame({
         "word": words,
         "lemma": lemmas,
+        "pos": pos,
     })  
     
     df["variation"] = None
