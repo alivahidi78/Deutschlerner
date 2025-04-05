@@ -1,5 +1,6 @@
 import spacy
 import pandas as pd
+from deep_translator import GoogleTranslator
 
 
 def preprocess(text):
@@ -31,3 +32,7 @@ def preprocess(text):
         df.loc[e["part"], "variation"] = e["full"]
         
     return df
+
+def translate_google(text, source_language="de", target_language="en"):
+    return GoogleTranslator(source=source_language, target=target_language).translate(text)
+    

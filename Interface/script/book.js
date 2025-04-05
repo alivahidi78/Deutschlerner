@@ -1,16 +1,18 @@
 // Handle word click
 let word_index = -1;
 
-const handleWordClick = (word, index) => {
+const handleWordClick = (index, word) => {
     word_index = index
     const textarea = document.getElementById('search');
-    pywebview.api.word_clicked(word, index).then(response => {
+    pywebview.api.word_clicked(index, word).then(response => {
         let lemma = response[1]
         let variation = response[2]
         if (variation)
             textarea.value = variation
         else
             textarea.value = lemma
+        updateText();
+        dictTranslate();
     });
 };
 
@@ -96,7 +98,7 @@ const displayText = (display_data) => {
             else
                 wordElement.innerText = ` ${text}`;
 
-            wordElement.onclick = () => handleWordClick(text, index);
+            wordElement.onclick = () => handleWordClick(index, text);
             textContainer.appendChild(wordElement)
         }
         previous_word = text
@@ -140,3 +142,35 @@ window.onload = function () {
 
     setInterval(updateText, 30000);
 };
+
+function googleTranslate() {
+    const textarea = document.getElementById('search');
+    word = textarea.value;
+    const desc = document.getElementById('desc');
+    const info = document.getElementById('word-info');
+    info.innerHTML = ""
+    desc.innerHTML = "<i>Loading...</i>"
+    pywebview.api.google_translate(word_index, word).then(response => {
+        info.innerHTML = `<strong>${word} ${response[0] || ''}</strong>`;
+        if (typeof response[1] == 'string') {
+            desc.innerHTML = response[1];
+        } else {
+            desc.innerHTML = "<i>Connection Error</i>";
+        }
+    });
+}
+
+function dictTranslate(){
+    const textarea = document.getElementById('search');
+    word = textarea.value;
+    const desc = document.getElementById('desc');
+    const info = document.getElementById('word-info');
+    pywebview.api.translate(word_index, word).then(response => {
+        info.innerHTML = `<strong>${word} ${response[0] || ''}</strong>`;
+        if (typeof response[1] == 'string') {
+            desc.innerHTML = response[1];
+        } else {
+            desc.innerHTML = "<i>No Data</i>";
+        }
+    });
+}

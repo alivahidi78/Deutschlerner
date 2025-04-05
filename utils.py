@@ -6,14 +6,14 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 import re
-import nlp
-from db import DB
+import text_processing
+from db import DB, Dictionary
 
 class DATA:
     window = None
     text = None
     title = None
-    display_data = None
+    processed_data = None
     book_data = None
     chapter = -1
     chapter_count = -1
@@ -37,9 +37,9 @@ def get_test_text():
     load_dotenv()
     DATA.title = os.getenv("TEST_TITLE")
     DATA.text = read_txt(os.getenv("TEST_FILE_PATH"))
-    DATA.display_data = list(prepare_data(DATA.text))
+    DATA.processed_data = list(prepare_data(DATA.text))
     DATA.chapter = 1
-    return DATA.title, DATA.display_data, 1, 1
+    return DATA.title, DATA.processed_data, 1, 1
 
 def set_book_data(book_data):
     DATA.book_data = book_data
@@ -63,8 +63,9 @@ def get_chapter():
         
     df = DB.read_chapter_from_db(DATA.book_id, DATA.chapter)
     DATA.chapter_df = df
-    DATA.display_data = prepare_data(df)
-    json_data = DATA.display_data.reset_index().to_json(orient="records")
+    DATA.processed_data = prepare_data(df)
+    highlighted = DATA.processed_data[["word", "highlight"]]
+    json_data = highlighted.reset_index().to_json(orient="records")
     return DATA.title, json_data, DATA.chapter_count, DATA.chapter
 
 def next_chapter():
@@ -85,30 +86,31 @@ def prev_chapter():
     
 def prepare_data(df):        
     #TODO do not highlight words that are not words (numbers etc)
-    # l_check = DB.check_word_list(df["lemma"].tolist())
-    # v_check = DB.check_word_list(df["variation"].tolist())
-    # highlight = [2 if (b1 and b2) else 1 if (b1 or b2) else 0 
-    # for b1, b2 in zip(list1, list2)]
-
+    #TODO treat particles and main parts differently so they stay in sync
     lem_status_list = DB.get_status_for_words(list(df["lemma"]))
     var_status_list = DB.get_status_for_words(list(df["variation"]))
+    mapping = {
+        "empty": "empty",
+        None: "new",
+        0: "unknown",
+        1: "known"
+    }
+    df["h_lem"] = [mapping.get(item, item) for item in lem_status_list]
+    df["h_var"] = [mapping.get(item, item) for item in var_status_list]
     highlight = []
-    for v1, v2 in zip(lem_status_list, var_status_list):
-        if v1 is None and v2 is None:
+    for lem, var in zip(lem_status_list, var_status_list):
+        if (var == "empty" and lem is None) or (var is None):
             highlight.append("new")
-        elif (v1 == 0 and v2 == 0) or (v1 is None and v2 == 0) or (v2 is None and v1 == 0) or (v2 == 1 and v1 is None):
-            highlight.append("unknown")
-        elif (v1 == 1 and v2 == 0) or (v1 == 0 and v2 == 1):
-            highlight.append("half")
-        elif (v1 == 1 and v2 == 1) or (v1 == 1 and v2 is None):
+        elif (var == "empty" and lem == 1) or (var == 1):
             highlight.append("known")
+        elif (var == 0 and lem == 1):
+            highlight.append("half")
+        elif (var == "empty" and lem == 0) or (var == 0):
+            highlight.append("unknown")
         else:
-            raise ValueError("Critical Error W3")
-
+            raise ValueError("Unexpected datapoint")
     df["highlight"] = highlight
-    # highlight = df[["word", "highlight"]] TODO fix
-    highlight = df
-    return highlight
+    return df
 
 def epub2txt(epub_object, book_id):
     # Load EPUB file
@@ -124,7 +126,7 @@ def epub2txt(epub_object, book_id):
             if not text:
                 continue
             print(f"importing chapter {chapter_counter}...")
-            data = nlp.preprocess(text)
+            data = text_processing.preprocess(text)
             DB.write_chapter_to_db(data, book_id, chapter_counter)
             chapter_counter += 1
     return chapter_counter - 1
@@ -151,7 +153,7 @@ def import_txt(path):
     id = DB.add_book(file_name, 1)
     try:
         text = read_txt(path)
-        data = nlp.preprocess(text)
+        data = text_processing.preprocess(text)
         book_id = str(id)
         DB.write_chapter_to_db(data, book_id, 1)
     except Exception as e:
@@ -168,8 +170,21 @@ def get_word_info(index):
     return word, lemma, variation
     
 def save_ignored_words():
-    df = DATA.display_data
-    #TODO save variations as well 
-    filtered_values = set(df.loc[(df["highlight"]) == "new", 'lemma'])
+    df = DATA.processed_data
+    #TODO check if the logic tracks
+    filtered_values = set(df.loc[(df["h_var"] == "empty") & (df["h_lem"] == "new"), "lemma"])
+    filtered_values.update(set(df.loc[df["h_var"] == "new", "variation"]))
     DB.add_word_list(list(filtered_values))
     
+def translate_google(text, source_language="de", target_language="en"):
+    article = Dictionary.get_article(text)
+    try:
+        trans = text_processing.translate_google(text, source_language, target_language)
+    except Exception as e:
+        trans = None
+    return [article, trans]
+
+def translate(text):
+    article = Dictionary.get_article(text)
+    trans = Dictionary.get_translation(text)
+    return [article, trans]

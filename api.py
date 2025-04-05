@@ -48,11 +48,14 @@ class API:
     def set_book_data(self, book_data):
         utils.set_book_data(book_data)
 
-    def word_clicked(self, word, index):
+    def word_clicked(self, index, word):
         print(f"{index}: {word}")
-        # utils.DATA.unknown_chapter_words.append(lemma)
         w, lemma, variation = utils.get_word_info(index)
         assert word == w
+        if(variation is None and not DB.word_exists(lemma)):
+            self.save_word_unknown(index, lemma)
+        if(variation is not None and not DB.word_exists(variation)):
+            self.save_word_unknown(index, variation)
         return [index, lemma, variation]
     
     def save_word(self, index, word):
@@ -75,6 +78,12 @@ class API:
             return True
         except Exception as e:
             raise e
+        
+    def google_translate(self, index, word):
+        return utils.translate_google(word)
+        
+    def translate(self, index, word):
+        return utils.translate(word)
     
     def request_prev(self):
         utils.prev_chapter()

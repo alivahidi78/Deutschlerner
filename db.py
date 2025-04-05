@@ -10,8 +10,7 @@ class DB:
     def create_db():
         
         load_dotenv()
-        DB.path = os.path.join(os.getenv("DB_FOLDER"), "database.db")
-        DB.txt_path = os.getenv("TXT_OUTPUT_FOLDER")
+        DB.path = os.getenv("DB_PATH")
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor() 
         # Create words table
@@ -83,7 +82,8 @@ class DB:
         results = dict(cursor.fetchall())
         conn.close()
         
-        status_list = [results.get(word, None) for word in word_list]
+        # status_list = [results.get(word, None) for word in word_list]
+        status_list = ["empty" if word is None else results.get(word, None) for word in word_list]
         return status_list
         
     def delete_word(word):
@@ -240,7 +240,36 @@ class DB:
         df_from_sql = pd.read_sql(f'SELECT * FROM "book_{book_id}_{chapter_id}"', conn)
         conn.close()     
         return df_from_sql
+    
+class Dictionary:
+    
+    dict_path = os.getenv("DICT_PATH")
+    articles_path = os.getenv("ARTICLES_PATH")
+    
+    def get_translation(text):
+        conn = sqlite3.connect(Dictionary.dict_path)
+        cursor = conn.cursor()
+        query = "SELECT trans_list FROM simple_translation WHERE written_rep = ?"
+        cursor.execute(query, (text,))
+        result = cursor.fetchone()  # Fetch the first result
+        conn.close()
+        if result:
+            return result[0]
+        else:
+            return None
+    
+    def get_article(text):
+        conn = sqlite3.connect(Dictionary.articles_path)
+        cursor = conn.cursor()
 
+        query = "SELECT genus FROM lemma_genus WHERE LOWER(lemma) = LOWER(?)"
+        cursor.execute(query, (text,))
+        result = cursor.fetchone()  # Fetch the first result
+        if(result):
+            return f"({",".join(result)})"
+        else:
+            return None
+        conn.close()
 
     
         

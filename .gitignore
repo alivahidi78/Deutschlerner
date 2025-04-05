@@ -1,5 +1,6 @@
 .venv/
 examples/
+dictionary/
 db/
 .env
 test.ipynb

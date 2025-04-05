@@ -78,3 +78,7 @@
     display: inline-block;
     color: rgb(57, 235, 128);
 }
+
+#word-info {
+    margin-bottom: 20px;
+}

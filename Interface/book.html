@@ -28,10 +28,13 @@
         </div>
         <div class="dict">
             <textarea class="search", id="search" placeholder="No Words Selected"></textarea>
-            <button class="small_btn" onclick="">Look Up</button>
-            <button class="small_btn" onclick="">Google</button>
+            <button class="small_btn" onclick="dictTranslate()">Look Up</button>
+            <button class="small_btn" onclick="googleTranslate()">Google</button>
             <br /><br />
-            <div class="description"></div>
+            <div class="description">
+                <div id="word-info"></div>
+                <div id="desc"></div>
+            </div>
             <br />
             <button class="small_btn" onclick="saveWord()">Known</button>
             <button class="small_btn" onclick="saveWordUnknown()">Unkown</button>
