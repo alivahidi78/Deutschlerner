@@ -9,11 +9,15 @@ function listBooks(){
 function importTxt(){
     pywebview.api.open_txt().then(response => {
         alert(response)
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
 
 function importEpub(){
     pywebview.api.open_epub().then(response => {
         alert(response)
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }

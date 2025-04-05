@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <link rel="stylesheet" href="style/main_dark.css">
 </head>
+
 <body>
+    <div id="overlay" class="overlay">
+        <div class="confirmation-window">
+            <p>Are you sure you want to delete <i>"<span id="book_name"></span>"</i> ?</p>
+            <p>This action cannot be undone.</p>
+            <button class="small_btn_red" onclick="confirmAction()">Delete</button>
+            <button class="small_btn" onclick="cancelAction()">Cancel</button>
+        </div>
+    </div>
     <button class="small_btn" onclick="mainMenu()">Main Menu</button>
     <button class="small_btn" onclick="updateList()">Refresh List</button>
-    <div id="btn_container">
+    <div class="btn_container" id="btn_container">
         Loading...
     </div>
     <script src="script/book-list.js"></script>
 </body>
+
 </html>

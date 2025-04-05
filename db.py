@@ -154,6 +154,15 @@ class DB:
             print(f"Book '{name}' not found.")
         
         conn.close()
+        
+    def get_book_info(name):
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM books WHERE name = ?", (name,))
+        result = cursor.fetchone()
+        conn.close()
+        return result
+        
 
     def list_books():
         conn = sqlite3.connect(DB.path)
@@ -240,6 +249,13 @@ class DB:
         df_from_sql = pd.read_sql(f'SELECT * FROM "book_{book_id}_{chapter_id}"', conn)
         conn.close()     
         return df_from_sql
+    
+    def delete_chapter_from_db(book_id, chapter_id):
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        cursor.execute(f"DROP TABLE IF EXISTS book_{book_id}_{chapter_id}")
+        conn.commit()
+        conn.close()
     
 class Dictionary:
     

@@ -163,6 +163,15 @@ def import_txt(path):
 def get_book_list():
     return DB.list_books()
 
+def delete_book(data):
+    info = DB.get_book_info(data[1])
+    id = info[0]
+    name = info[1]
+    chapter_cnt = info[2]
+    for i in range(1, chapter_cnt + 1):
+        DB.delete_chapter_from_db(id, i)
+    DB.delete_book(name)
+
 def get_word_info(index):
     lemma = DATA.chapter_df.loc[index, "lemma"]
     variation = DATA.chapter_df.loc[index, "variation"]

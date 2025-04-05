@@ -6,6 +6,14 @@ body {
     color: rgb(230, 230, 230); /* Light text for contrast */
 }
 
+.btn_container {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    gap: 10px;
+    width: 100%; /* You can adjust this width */
+    margin: 20px auto; /* Centers the container on the page */
+}
+
 .btn {
     display: block;
     margin-top: 10px;
@@ -24,3 +32,52 @@ body {
     color: white;
     text-decoration: none;
 }
+
+.small_btn_red {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: rgb(226, 19, 19);
+    color: white;
+    text-decoration: none;
+}
+
+.book_btn {
+    display: block;
+    margin-top: 10px;
+    padding: 20px 20px;
+    background: rgb(55, 75, 95); 
+    color: white; /* Light text */
+    text-decoration: none;
+}
+
+.delete_btn {
+    display: block;
+    margin-top: 10px;
+    padding: 20px 20px;
+    background: rgb(226, 19, 19);
+    color: white; /* Light text */
+    text-decoration: none;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    z-index: 9999; /* Ensure it’s above other content */
+  }
+
+.confirmation-window {
+    /* background-color: ; */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  

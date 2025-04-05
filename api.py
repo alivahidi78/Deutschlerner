@@ -93,3 +93,6 @@ class API:
         utils.save_ignored_words()
         utils.next_chapter()
         return f"Next page requested"
+    
+    def delete_book(self, data):
+        return utils.delete_book(data)

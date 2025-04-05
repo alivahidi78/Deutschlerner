@@ -13,6 +13,8 @@ const handleWordClick = (index, word) => {
             textarea.value = lemma
         updateText();
         dictTranslate();
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 };
 
@@ -23,6 +25,8 @@ const saveWord = () => {
         if(!response)
             alert(response);
         updateText();
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
 
@@ -33,6 +37,8 @@ const saveWordUnknown = () => {
         if(!response)
             alert(response);
         updateText();
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
 
@@ -43,10 +49,10 @@ const forgetWord = () => {
         if(!response)
             alert(response);
         updateText();
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
-
-
 
 const isRightPunctuation = (str) => {
     const punctuationRegex = /^[“«!.,?;:)}\]$%]+$/;
@@ -110,18 +116,24 @@ function updateText() {
         document.getElementById('title').innerHTML = response[0];
         document.getElementById('page_num').innerHTML = response[1] + '/' + response[2];
         displayText(response[3]);
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
 
 function requestPrev() {
     pywebview.api.request_prev().then(response => {
         updateText();
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
 
 function requestNext() {
     pywebview.api.request_next().then(response => {
         updateText();
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
 
@@ -157,6 +169,8 @@ function googleTranslate() {
         } else {
             desc.innerHTML = "<i>Connection Error</i>";
         }
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
 
@@ -172,5 +186,7 @@ function dictTranslate(){
         } else {
             desc.innerHTML = "<i>No Data</i>";
         }
+    }).catch(error => {
+        alert(`Error: ${error}`);
     });
 }
