@@ -1,3 +1,8 @@
+:root {
+    --font-size: 18px;
+    --line-height: 1.5;
+}
+
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
@@ -84,6 +89,8 @@ body {
     border: 1px solid white;
     padding: 20px;
     background-color: white;
+    font-size: var(--font-size);
+    line-height: var(--line-height);
 }
 
 .left-side {
@@ -113,7 +120,9 @@ body {
     padding: 20px;
     border: 1px solid black;
     min-height: 210px;
-    min-width: 210px;
+    height: calc(100% - 300px);
+    width: 210px;
+    overflow: auto;
 }
 
 .main-area {
@@ -123,7 +132,6 @@ body {
 
 
 .known_word {
-    font-size: 15px;
     white-space: pre;
     cursor: pointer;
     display: inline-block;
@@ -131,7 +139,6 @@ body {
 }
 
 .new_word {
-    font-size: 15px;
     white-space: pre;
     cursor: pointer;
     display: inline-block;
@@ -139,7 +146,6 @@ body {
 }
 
 .unknown_word {
-    font-size: 15px;
     white-space: pre;
     cursor: pointer;
     display: inline-block;
@@ -148,7 +154,6 @@ body {
 }
 
 .half_known_word {
-    font-size: 15px;
     white-space: pre;
     cursor: pointer;
     display: inline-block;

@@ -319,12 +319,13 @@ class Dictionary:
     def get_translation(text):
         conn = sqlite3.connect(Dictionary.dict_path)
         cursor = conn.cursor()
-        query = "SELECT trans_list FROM simple_translation WHERE LOWER(written_rep) = LOWER(?)"
+        query = "SELECT translation FROM translation_table WHERE LOWER(text) = LOWER(?)"
         cursor.execute(query, (text,))
-        result = cursor.fetchone()  # Fetch the first result
+        result = cursor.fetchall()  # Fetch the first result
         conn.close()
         if result:
-            return result[0]
+            translation = [row[0] for row in result if row[0]]
+            return " | ".join(translation) if translation else None
         else:
             return None
     

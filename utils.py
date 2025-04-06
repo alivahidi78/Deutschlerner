@@ -182,8 +182,8 @@ def get_word_info(index):
 def save_ignored_words():
     df = DATA.processed_data
     #TODO check if the logic tracks
-    filtered_values = set(df.loc[(df["h_var"] == "empty") & (df["h_lem"] == "new"), "lemma"])
-    filtered_values.update(set(df.loc[df["h_var"] == "new", "variation"]))
+    filtered_values = set(df.loc[(df["h_var"] == "empty") & (df["h_lem"] == "new") & (~df["pos"].isin(["NUM", "PUNCT"])), "lemma"])
+    filtered_values.update(set(df.loc[(df["h_var"] == "new") & (df["pos"] != "NUM") & (~df["pos"].isin(["NUM", "PUNCT"])), "variation"]))
     DB.add_word_list(list(filtered_values))
     
 def translate_google(text, source_language="de", target_language="en"):
