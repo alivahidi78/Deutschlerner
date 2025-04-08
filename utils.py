@@ -32,15 +32,6 @@ def read_txt(path):
     except IOError:
         print("An error occurred while reading the file.")
 
-def get_test_text():
-    #TODO
-    load_dotenv()
-    DATA.title = os.getenv("TEST_TITLE")
-    DATA.text = read_txt(os.getenv("TEST_FILE_PATH"))
-    DATA.processed_data = list(prepare_data(DATA.text))
-    DATA.chapter = 1
-    return DATA.title, DATA.processed_data, 1, 1
-
 def set_book_data(book_data):
     DATA.book_data = book_data
     DATA.book_id = DATA.book_data[0]
@@ -57,9 +48,9 @@ def get_chapter():
             if last_book_data:
                set_book_data(last_book_data)
             else:
-                return get_test_text()
+                return None
         except:
-            return get_test_text()
+            return None
         
     df = DB.read_chapter_from_db(DATA.book_id, DATA.chapter)
     DATA.chapter_df = df
@@ -181,9 +172,8 @@ def get_word_info(index):
     
 def save_ignored_words():
     df = DATA.processed_data
-    #TODO check if the logic tracks
     filtered_values = set(df.loc[(df["h_var"] == "empty") & (df["h_lem"] == "new") & (~df["pos"].isin(["NUM", "PUNCT"])), "lemma"])
-    filtered_values.update(set(df.loc[(df["h_var"] == "new") & (df["pos"] != "NUM") & (~df["pos"].isin(["NUM", "PUNCT"])), "variation"]))
+    filtered_values.update(set(df.loc[(df["h_var"] == "new") & (~df["pos"].isin(["NUM", "PUNCT"])), "variation"]))
     DB.add_word_list(list(filtered_values))
     
 def translate_google(text, source_language="de", target_language="en"):

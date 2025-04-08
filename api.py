@@ -2,7 +2,7 @@ import utils
 import os
 import webview
 import traceback
-from db import DB
+from db import DB, Dictionary
 
 
 class API:
@@ -80,6 +80,9 @@ class API:
             return True
         except Exception as e:
             raise e
+    
+    def dictionary_exists(self):
+        return Dictionary.dict_exists
         
     def google_translate(self, index, word):
         return utils.translate_google(word)

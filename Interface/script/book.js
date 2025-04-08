@@ -1,5 +1,6 @@
 // Handle word click
 let word_index = -1;
+let default_dict = 0;
 
 const handleWordClick = (index, word) => {
     word_index = index
@@ -12,7 +13,14 @@ const handleWordClick = (index, word) => {
         else
             textarea.value = lemma
         updateText();
-        dictTranslate();
+        switch(default_dict){
+            case 0:
+                dictTranslate();
+                break;
+            case 1:
+                googleTranslate();
+                break;
+        }
     }).catch(error => {
         alert(`Error: ${error}`);
     });
@@ -194,9 +202,21 @@ function dictTranslate() {
     });
 }
 
+function checkDict() {
+    pywebview.api.dictionary_exists().then(response =>{
+        document.getElementById('dict_btn').disabled = !response;
+        if(!response){
+            default_dict = 1;
+        }
+    }).catch(error => {
+        alert(`Error: ${error}`);
+    });
+}
+
 window.onload = function () {
     // Wait for a brief moment before calling the function
     setTimeout(function () {
+        checkDict();
         updateText();
     }, 200);
 

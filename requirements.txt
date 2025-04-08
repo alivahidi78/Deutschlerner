@@ -1,0 +1,8 @@
+pywebview
+numpy
+pandas
+ebooklib
+bs4
+python-dotenv
+deep_translator
+spacy

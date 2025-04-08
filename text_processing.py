@@ -4,6 +4,8 @@ from deep_translator import GoogleTranslator
 
 
 def preprocess(text):
+    """Processes text information into a dataframe.
+    """
     words = []
     lemmas = []
     pos = []
