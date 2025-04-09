@@ -13,7 +13,8 @@ class DB:
         """ Creates and/or loads user_data database files. Should be executed at program start.
         """
         
-        load_dotenv()
+        load_dotenv("config.txt")
+        load_dotenv(utils.resource_path(".env"))
         DB.path = os.getenv("DB_PATH")
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor() 
@@ -54,7 +55,7 @@ class DB:
         result = cursor.fetchone()
 
         if not result:
-            sample_text_path = os.getenv("TEST_TXT_PATH")
+            sample_text_path = utils.resource_path(os.getenv("TEST_TXT_PATH"))
             sample_text = utils.read_txt(sample_text_path)
             sample_data = text_processing.preprocess(sample_text)
             DB.write_chapter_to_db(sample_data, "x", "x")
@@ -216,7 +217,7 @@ class DB:
             print(f"Book '{name}' not found.")
         conn.close()
         
-    def delete_book(name):
+    def delete_book_desc(name):
         """Removes a book description from the database.
         """
         conn = sqlite3.connect(DB.path)
@@ -392,7 +393,7 @@ class Dictionary:
     def initialize_dictionary():
         """ Loads the dictionary files. Should be executed at program start.
         """
-        load_dotenv()
+        load_dotenv("config.txt")
         Dictionary.dict_path = os.getenv("DICT_PATH")
         Dictionary.articles_path = os.getenv("ARTICLES_PATH")
         if(Dictionary.dict_path):

@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import re
 import text_processing
 from db import DB, Dictionary
+import sys
 
 class DATA:
     current_page = None
@@ -21,6 +22,7 @@ class DATA:
     book_id = -1
     last_index = 0
     chapter_df = None
+    cancel_import = False
 
 def read_txt(path):
     try:
@@ -42,7 +44,7 @@ def set_book_data(book_data):
     DB.set_last_opened_book(DATA.book_id)
     
 def get_sample_chapter_df():
-    load_dotenv()
+    load_dotenv(resource_path(".env"))
     title = os.getenv("TEST_TITLE")
     set_book_data(["x", title, "x", "x"])
     df = DB.read_chapter_from_db("x", "x")
@@ -123,6 +125,8 @@ def epub2txt(epub_object, book_id):
     text = ""
     chapter_counter = 1
     for item in epub_object.get_items():
+        if(DATA.cancel_import):
+            return chapter_counter - 1
         if item.get_type() == ebooklib.ITEM_DOCUMENT:
             content = item.get_body_content().decode('utf-8')
             soup = BeautifulSoup(content, 'html.parser')
@@ -130,6 +134,7 @@ def epub2txt(epub_object, book_id):
             text = '\n\n'.join(paragraphs).strip()
             if not text:
                 continue
+            DATA.window.evaluate_js(f"setChapter({chapter_counter});")
             print(f"importing chapter {chapter_counter}...")
             data = text_processing.preprocess(text)
             DB.write_chapter_to_db(data, book_id, chapter_counter)
@@ -138,43 +143,52 @@ def epub2txt(epub_object, book_id):
 
 
 def import_epub(path):
-    load_dotenv()
+    DATA.cancel_import = False
+    load_dotenv(resource_path(".env"))
     epub_book = epub.read_epub(path)
     title = epub_book.title
     id = DB.add_book(title, 1)
+    DATA.window.evaluate_js(f"setBook('{title}');")
     try:
         book_id = str(id)
         chapter_cnt = epub2txt(epub_book, book_id)
         DB.update_book(title, "chapter_cnt", chapter_cnt)
+        if(DATA.cancel_import):
+            delete_book(title)
     except Exception as e:
-        DB.delete_book(title)
+        delete_book(title)
         raise e
     
 
 def import_txt(path):
-    load_dotenv()
+    DATA.cancel_import = False
+    load_dotenv(resource_path(".env"))
     file_name = os.path.basename(path)
     id = DB.add_book(file_name, 1)
+    DATA.window.evaluate_js(f"setBook('{file_name}');")
+    DATA.window.evaluate_js(f"setChapter(1);")
     try:
         text = read_txt(path)
         data = text_processing.preprocess(text)
         book_id = str(id)
         DB.write_chapter_to_db(data, book_id, 1)
+        if(DATA.cancel_import):
+            delete_book(file_name)
     except Exception as e:
-        DB.delete_book(file_name)
+        delete_book(file_name)
         raise e
     
 def get_book_list():
     return DB.list_books()
 
-def delete_book(data):
-    info = DB.get_book_info(data[1])
+def delete_book(name):
+    info = DB.get_book_info(name)
     id = info[0]
     name = info[1]
     chapter_cnt = info[2]
     for i in range(1, chapter_cnt + 1):
         DB.delete_chapter_from_db(id, i)
-    DB.delete_book(name)
+    DB.delete_book_desc(name)
 
 def get_word_info(index):
     lemma = DATA.chapter_df.loc[index, "lemma"]
@@ -202,8 +216,16 @@ def translate(text):
     return [article, trans]
 
 def get_loading_js():
-    load_dotenv()
-    js_path = os.getenv("LOADING_JS_PATH")
+    load_dotenv(resource_path(".env"))
+    js_path = resource_path(os.getenv("LOADING_JS_PATH"))
     with open(js_path, 'r') as js_file:
         return js_file.read()
+    
+def resource_path(relative_path):
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
     

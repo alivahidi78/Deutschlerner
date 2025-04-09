@@ -4,8 +4,12 @@ import utils
 from api import API
 import sqlite3
 from db import DB, Dictionary
+import sys
+import io
 
 if __name__=="__main__":
+    if sys.stdout.encoding != 'utf-8':
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     api = API()
     DB.initialize_db()
     Dictionary.initialize_dictionary()

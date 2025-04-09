@@ -1,6 +1,8 @@
 import spacy
 import pandas as pd
 from deep_translator import GoogleTranslator
+import os, sys
+import utils
 
 
 def preprocess(text):
@@ -10,7 +12,7 @@ def preprocess(text):
     lemmas = []
     pos = []
     separable = []
-    nlp = spacy.load("de_core_news_md")
+    nlp = spacy.load("./nlp_core")
     doc = nlp(text)
 
     for token in doc:

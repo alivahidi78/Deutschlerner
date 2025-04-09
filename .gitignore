@@ -4,4 +4,8 @@ dictionary/
 db/
 .env
 test.ipynb
+main.spec
+build/
+dist/
 __pycache__/
+nlp_core/

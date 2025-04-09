@@ -10,6 +10,9 @@ pywebview.api.get_theme().then(response => {
 
 pywebview.api.get_current_page().then(response => {
     switch (response) {
+        case "main.html":
+            window.hideMainOverlay();
+            break;
         case "book.html":
             window.updateText();
             break;

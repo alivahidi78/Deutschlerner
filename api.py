@@ -20,23 +20,24 @@ class API:
         return file_paths
     
     def open_txt(self):
-        try:
-            paths = self.open_files(("Text files (*.txt)",))
-            for p in paths:
-                utils.import_txt(p)
-            return "File imported."
-        except Exception as e:
-            return f"An error occurred: {e}"
+        paths = self.open_files(("Text files (*.txt)",))
+        if paths is None:
+            return False 
+        for p in paths:
+            utils.import_txt(p)
+        if utils.DATA.cancel_import:
+            return False
+        return True
     
     def open_epub(self):
-        try:
-            paths = self.open_files(("Epub files (*.epub)",))
-            for p in paths:
-                utils.import_epub(p)
-            return "File imported."
-        except Exception as e:
-            print(traceback.format_exc())
-            return f"An error occurred: {e}"
+        paths = self.open_files(("Epub files (*.epub)",))
+        if paths is None:
+            return False 
+        for p in paths:
+            utils.import_epub(p)
+        if utils.DATA.cancel_import:
+            return False
+        return True
 
     def load_page(self, page):
         utils.DATA.window.load_url(os.path.join("interface", page))
@@ -105,7 +106,7 @@ class API:
         utils.save_ignored_words()
     
     def delete_book(self, data):
-        return utils.delete_book(data)
+        return utils.delete_book(data[1])
     
     def reset_words(self):
         return DB.reset_words()
@@ -119,3 +120,6 @@ class API:
     
     def change_theme(self, option):
         DB.set_active_theme(option)
+
+    def cancel_import(self):
+        utils.DATA.cancel_import = True

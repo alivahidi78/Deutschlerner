@@ -23,6 +23,10 @@ function updateList() {
     let container = document.getElementById("btn_container");
     container.innerHTML = "";
     pywebview.api.get_book_list().then(response => {
+        if(!response){
+            container.innerHTML = "<i>No books imported yet!<i/>";
+            return;
+        }
         response.forEach(element => {
             let onclick = function () {
                 pywebview.api.set_book_data(element).then(response => {

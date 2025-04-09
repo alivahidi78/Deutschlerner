@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <link id="theme-link" rel="stylesheet" href="style/default-dark.css">
 </head>
+
 <body>
+    <div id="overlay" class="overlay">
+        <div class="confirmation-window">
+            <div id="overlay-text">
+                <p>Import in progress: <i><span id="book_name"></span></i></p>
+                <p>Importing chapter <span id="chapter_name"></span>...</p>
+            </div>
+            <button class="small_btn" onclick="cancelImport()">Cancel</button>
+        </div>
+    </div>
     <button class="btn" onclick="continueReading()">Continue where you left off</button>
     <button class="btn" onclick="listBooks()">List books</button>
     <button class="btn" onclick="importEpub()">Import epub file</button>
@@ -14,4 +25,5 @@
     <button class="btn" onclick="settings()">Settings</button></div>
     <script src="script/main.js"></script>
 </body>
+
 </html>
