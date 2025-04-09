@@ -86,6 +86,8 @@ body {
 }
 
 #text {
+    cursor: default;
+    user-select: text;
     border: 1px solid white;
     padding: 20px;
     background-color: white;
@@ -117,6 +119,8 @@ body {
 }
 
 .description {
+    cursor: text;
+    user-select: text;
     padding: 20px;
     border: 1px solid black;
     min-height: 210px;
@@ -133,21 +137,18 @@ body {
 
 .known_word {
     white-space: pre;
-    cursor: pointer;
     display: inline-block;
     color: #0f0f0f;
 }
 
 .new_word {
     white-space: pre;
-    cursor: pointer;
     display: inline-block;
     color: rgb(100, 100, 180);
 }
 
 .unknown_word {
     white-space: pre;
-    cursor: pointer;
     display: inline-block;
     color: rgb(20, 150, 90);
 
@@ -155,7 +156,6 @@ body {
 
 .half_known_word {
     white-space: pre;
-    cursor: pointer;
     display: inline-block;
     color: rgb(7, 185, 78);
 }

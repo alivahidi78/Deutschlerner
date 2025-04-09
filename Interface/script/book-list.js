@@ -64,10 +64,5 @@ function cancelAction() {
     hideOverlay();
 }
 
-window.onload = function () {
-    hideOverlay();
-    // Wait for a brief moment before calling the function
-    setTimeout(function () {
-        updateList();
-    }, 200);
-};
+window.hideListOverlay = hideOverlay
+window.updateBookList = updateList

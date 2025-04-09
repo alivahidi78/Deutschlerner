@@ -43,6 +43,4 @@ function cancelAction() {
     hideOverlay();
 }
 
-window.onload = function () {
-    hideOverlay();
-};
+window.hideSettingsOverlay = hideOverlay

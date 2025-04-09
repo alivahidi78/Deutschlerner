@@ -10,6 +10,7 @@ import text_processing
 from db import DB, Dictionary
 
 class DATA:
+    current_page = None
     window = None
     text = None
     title = None
@@ -40,24 +41,36 @@ def set_book_data(book_data):
     DATA.chapter = DATA.book_data[3]
     DB.set_last_opened_book(DATA.book_id)
     
+def get_sample_chapter_df():
+    load_dotenv()
+    title = os.getenv("TEST_TITLE")
+    set_book_data(["x", title, "x", "x"])
+    df = DB.read_chapter_from_db("x", "x")
+    return df    
+    
 def get_chapter():
     if not DATA.book_data:
         try:
             last_id = DB.get_last_opened_book()
             last_book_data = DB.find_book_by_id(last_id)
             if last_book_data:
-               set_book_data(last_book_data)
+                set_book_data(last_book_data)
+                DATA.chapter_df = DB.read_chapter_from_db(DATA.book_id, DATA.chapter)
             else:
-                return None
+                DATA.chapter_df = get_sample_chapter_df()
         except:
-            return None
-        
-    df = DB.read_chapter_from_db(DATA.book_id, DATA.chapter)
-    DATA.chapter_df = df
-    DATA.processed_data = prepare_data(df)
+            DATA.chapter_df = get_sample_chapter_df()
+    else:
+        DATA.chapter_df = DB.read_chapter_from_db(DATA.book_id, DATA.chapter)
+    DATA.processed_data = prepare_data(DATA.chapter_df)    
     highlighted = DATA.processed_data[["word", "highlight"]]
     json_data = highlighted.reset_index().to_json(orient="records")
-    return DATA.title, json_data, DATA.chapter_count, DATA.chapter
+    
+    prev_permitted = isinstance(DATA.chapter, int) and DATA.chapter > 1
+    next_permitted = isinstance(DATA.chapter, int) and DATA.chapter < DATA.chapter_count
+    response = [DATA.title, json_data, DATA.chapter_count, DATA.chapter, Dictionary.dict_exists, prev_permitted, next_permitted]
+    
+    return response
 
 def next_chapter():
     if DATA.chapter < DATA.chapter_count:
@@ -140,7 +153,6 @@ def import_epub(path):
 
 def import_txt(path):
     load_dotenv()
-    # target_path = os.getenv("TXT_OUTPUT_FOLDER")
     file_name = os.path.basename(path)
     id = DB.add_book(file_name, 1)
     try:

@@ -122,8 +122,19 @@ const displayText = (display_data) => {
 function updateText() {
     pywebview.api.get_chapter().then(response => {
         document.getElementById('title').innerHTML = response[0];
-        document.getElementById('page_num').innerHTML = response[1] + '/' + response[2];
-        displayText(response[3]);
+        document.getElementById('page_num').innerHTML = response[3] + '/' + response[2];
+        displayText(response[1]);
+        prev_permitted = response[5];
+        next_permitted = response[6];
+        dict_exists = response[4];
+        document.getElementById('prev_btn').disabled = !prev_permitted;
+        document.getElementById('next_btn').disabled = !next_permitted;
+        document.getElementById('next_save_btn').disabled = !next_permitted;
+        document.getElementById('dict_btn').disabled = !dict_exists;
+        if(!dict_exists){
+            default_dict = 1;
+        }
+
     }).catch(error => {
         alert(`Error: ${error}`);
     });
@@ -202,23 +213,8 @@ function dictTranslate() {
     });
 }
 
-function checkDict() {
-    pywebview.api.dictionary_exists().then(response =>{
-        document.getElementById('dict_btn').disabled = !response;
-        if(!response){
-            default_dict = 1;
-        }
-    }).catch(error => {
-        alert(`Error: ${error}`);
-    });
-}
-
 window.onload = function () {
-    // Wait for a brief moment before calling the function
-    setTimeout(function () {
-        checkDict();
-        updateText();
-    }, 200);
-
     setInterval(updateText, 30000);
 };
+
+window.updateText = updateText

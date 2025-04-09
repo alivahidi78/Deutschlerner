@@ -8,3 +8,21 @@ pywebview.api.get_theme().then(response => {
     alert(`Error: ${error}`);
 });
 
+pywebview.api.get_current_page().then(response => {
+    switch (response) {
+        case "book.html":
+            window.updateText();
+            break;
+        case "book-list.html":
+            window.hideListOverlay();
+            window.updateBookList();
+            break;
+        case "settings.html":
+            window.hideSettingsOverlay();
+            break;
+        default:
+            break;
+    }
+}).catch(error => {
+    alert(`Error: ${error}`);
+});

@@ -2,6 +2,8 @@ import sqlite3
 from dotenv import load_dotenv
 import os
 import pandas as pd
+import text_processing
+import utils
 
 class DB:
     
@@ -47,6 +49,15 @@ class DB:
             theme_id INTEGER DEFAULT 0
         );
         """)
+        
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='book_x_x';")
+        result = cursor.fetchone()
+
+        if not result:
+            sample_text_path = os.getenv("TEST_TXT_PATH")
+            sample_text = utils.read_txt(sample_text_path)
+            sample_data = text_processing.preprocess(sample_text)
+            DB.write_chapter_to_db(sample_data, "x", "x")
         
         cursor.execute("SELECT * FROM active_theme LIMIT 1;")
         result = cursor.fetchone()
@@ -311,6 +322,7 @@ class DB:
             df (dataframe): chapter information in dataframe format.
             book_id (int): id of the book.
             chapter_id (int): id of the chapter.
+            replace (bool): if already exists, replace or fail.
         """
         conn = sqlite3.connect(DB.path)
         df.to_sql(f"book_{book_id}_{chapter_id}", conn, if_exists="fail")

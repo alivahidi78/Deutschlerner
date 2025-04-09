@@ -87,6 +87,8 @@ body {
 }
 
 #text {
+    cursor: default;
+    user-select: text;
     border: 1px solid #ccc;
     padding: 20px;
     background-color: #1e1e1e;
@@ -122,6 +124,8 @@ body {
 }
 
 .description {
+    cursor: text;
+    user-select: text;
     padding: 20px;
     border: 1px solid #888;
     background-color: #2a2a2a;
@@ -139,28 +143,24 @@ body {
 
 .known_word {
     white-space: pre;
-    cursor: pointer;
     display: inline-block;
     color: #ccc;
 }
 
 .new_word {
     white-space: pre;
-    cursor: pointer;
     display: inline-block;
     color: rgb(150, 150, 230);
 }
 
 .unknown_word {
     white-space: pre;
-    cursor: pointer;
     display: inline-block;
     color: rgb(50, 180, 110);
 }
 
 .half_known_word {
     white-space: pre;
-    cursor: pointer;
     display: inline-block;
     color: rgb(57, 235, 128);
 }

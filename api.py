@@ -40,12 +40,15 @@ class API:
 
     def load_page(self, page):
         utils.DATA.window.load_url(os.path.join("interface", page))
+        utils.DATA.current_page = page
         loading_code = utils.get_loading_js()
         utils.DATA.window.evaluate_js(loading_code)
+        
+    def get_current_page(self):
+        return utils.DATA.current_page
 
     def get_chapter(self):
-        title, display_data, outof, page = utils.get_chapter()
-        return title, page, outof, display_data
+        return utils.get_chapter()
     
     def set_book_data(self, book_data):
         utils.set_book_data(book_data)
