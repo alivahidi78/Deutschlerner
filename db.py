@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import text_processing
 import utils
+import re
 
 class DB:
     
@@ -33,7 +34,8 @@ class DB:
             name TEXT UNIQUE NOT NULL,
             chapter_cnt INTEGER DEFAULT 1,
             last_chapter_read INTEGER DEFAULT 1,
-            last_index_read INTEGER DEFAULT 0
+            last_index_read INTEGER DEFAULT 0,
+            fully_imported INTEGER DEFAULT 0
         );
         """)
         
@@ -72,6 +74,8 @@ class DB:
         # Commit and close connection
         conn.commit()
         conn.close()
+        
+        DB.collect_garbage()
         
         
     def add_word_list(word_list, status=1, replace=False):
@@ -198,7 +202,7 @@ class DB:
         cursor = conn.cursor()
         
         # Validate that the field is a valid column
-        valid_fields = ['last_chapter_read', 'last_index_read', 'chapter_cnt']
+        valid_fields = ["last_chapter_read", "last_index_read", "chapter_cnt", "fully_imported"]
         if field not in valid_fields:
             raise ValueError(f"Error: Invalid field '{field}'.")
         
@@ -380,8 +384,37 @@ class DB:
         theme_id = cursor.fetchone()[0]
         conn.close()
         return theme_id
+    
+    def collect_garbage():
+        conn = sqlite3.connect(DB.path)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM books WHERE fully_imported = 0")
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        cursor.execute("SELECT id FROM books;")
+        book_ids = [row[0] for row in cursor.fetchall()]
+        pattern = re.compile(r'^book_(\d+)_(\d+)$')
+        chapters_exist = set()
         
-        
+        for (table_name,) in tables:
+            match = pattern.match(table_name)
+            if match:
+                book_id = int(match.group(1))
+                if book_id not in book_ids:
+                    print(f"Dropping table: {table_name}")
+                    cursor.execute(f'DROP TABLE IF EXISTS "{table_name}"')
+                else:
+                    chapters_exist.add(book_id)        
+                    
+        keep_ids = list(chapters_exist)
+        if keep_ids:
+            list_str = ','.join('?' for _ in keep_ids)
+            query = f'DELETE FROM books WHERE id NOT IN ({list_str})'
+            cursor.execute(query, keep_ids)
+        else:
+            print("No dangling book descriptions.")
+        conn.commit()
+        conn.close()
     
 class Dictionary:
     

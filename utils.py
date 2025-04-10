@@ -144,6 +144,7 @@ def epub2txt(epub_object, book_id):
 
 def import_epub(path):
     DATA.cancel_import = False
+    DB.collect_garbage()
     load_dotenv(resource_path(".env"))
     epub_book = epub.read_epub(path)
     title = epub_book.title
@@ -155,6 +156,8 @@ def import_epub(path):
         DB.update_book(title, "chapter_cnt", chapter_cnt)
         if(DATA.cancel_import):
             delete_book(title)
+        else:
+            DB.update_book(title, "fully_imported", 1)
     except Exception as e:
         delete_book(title)
         raise e
@@ -162,6 +165,7 @@ def import_epub(path):
 
 def import_txt(path):
     DATA.cancel_import = False
+    DB.collect_garbage()
     load_dotenv(resource_path(".env"))
     file_name = os.path.basename(path)
     id = DB.add_book(file_name, 1)
@@ -174,6 +178,8 @@ def import_txt(path):
         DB.write_chapter_to_db(data, book_id, 1)
         if(DATA.cancel_import):
             delete_book(file_name)
+        else:
+            DB.update_book(file_name, "fully_imported", 1)
     except Exception as e:
         delete_book(file_name)
         raise e

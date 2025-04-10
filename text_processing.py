@@ -3,16 +3,18 @@ import pandas as pd
 from deep_translator import GoogleTranslator
 import os, sys
 import utils
+from dotenv import load_dotenv
 
 
 def preprocess(text):
     """Processes text information into a dataframe.
     """
+    load_dotenv("config.txt")
     words = []
     lemmas = []
     pos = []
     separable = []
-    nlp = spacy.load("./nlp_core")
+    nlp = spacy.load(os.getenv("NLP_CORE_PATH"))
     doc = nlp(text)
 
     for token in doc:
