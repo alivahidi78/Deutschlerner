@@ -18,6 +18,15 @@ function hideOverlay() {
     document.getElementById("overlay").style.display = "none";
 }
 
+function showSupportOverlay() {
+    document.getElementById("support-overlay").style.display = "flex";
+}
+
+function hideSupportOverlay() {
+    document.getElementById("support-overlay").style.display = "none";
+}
+
+
 function importTxt() {
     showOverlay();
     pywebview.api.open_txt().then(response => {
@@ -49,6 +58,14 @@ function cancelImport() {
     }).catch(error => {
         alert(`Error: ${error}`);
     });
+}
+
+function support(){
+    showSupportOverlay();
+}
+
+function cancelSupport(){
+    hideSupportOverlay();
 }
 
 function setBook(book) {

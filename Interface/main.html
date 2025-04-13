@@ -9,6 +9,17 @@
 </head>
 
 <body>
+    <div id="support-overlay" class="overlay">
+        <div class="confirmation-window">
+            <div id="overlay-text">
+                <p>This software is free and open-source under the GPL. If you would</p>
+                <p>like to support ongoing development, please consider donating!</p>
+                <a href="https://ko-fi.com/av_apps" target="_blank">Donation Page</a>
+                <br><br>
+            </div>
+            <button class="small_btn" onclick="cancelSupport()">Back</button>
+        </div>
+    </div>
     <div id="overlay" class="overlay">
         <div class="confirmation-window">
             <div id="overlay-text">
@@ -23,6 +34,7 @@
     <button class="btn" onclick="importEpub()">Import epub file</button>
     <button class="btn" onclick="importTxt()">Import txt file</button></div>
     <button class="btn" onclick="settings()">Settings</button></div>
+    <button class="btn" onclick="support()">Support Development</button>
     <script src="script/main.js"></script>
 </body>
 

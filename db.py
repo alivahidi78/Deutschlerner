@@ -16,6 +16,9 @@ class DB:
         
         load_dotenv("config.txt")
         load_dotenv(utils.resource_path(".env"))
+        db_folder = os.getenv("DB_FOLDER")
+        if not os.path.exists(db_folder):
+            os.makedirs(db_folder)
         DB.path = os.getenv("DB_PATH")
         conn = sqlite3.connect(DB.path)
         cursor = conn.cursor() 
