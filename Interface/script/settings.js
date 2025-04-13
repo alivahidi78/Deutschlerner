@@ -19,8 +19,28 @@ function changeTheme() {
     });
 }
 
+function importDictCC(){
+    showWaitOverlay();
+    pywebview.api.import_dict_cc().then(response => {
+        if (response)
+            alert("Dictionary successfully imported!\nRestart the app to use offline dictionary.");
+    }).catch(error => {
+        alert(`Error: ${error}`);
+    }).finally(() => {
+        hideWaitOverlay();
+    });
+}
+
 function setTheme(theme) {
     document.getElementById('theme-link').href = theme + '.css';
+}
+
+function showWaitOverlay() {
+    document.getElementById("wait-overlay").style.display = "flex";
+}
+
+function hideWaitOverlay() {
+    document.getElementById("wait-overlay").style.display = "none";
 }
 
 function showOverlay() {

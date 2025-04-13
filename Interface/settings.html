@@ -15,7 +15,13 @@
             <button class="small_btn" onclick="cancelAction()">Cancel</button>
         </div>
     </div>
+    <div id="wait-overlay" class="overlay">
+        <div class="confirmation-window">
+            <p>Please wait...</p>
+        </div>
+    </div>
     <button class="btn" onclick="mainMenu()">Main Menu</button>
+    <button class="btn" onclick="importDictCC()">Import dict.cc file</button>
     <button class="btn" onclick="resetWords()">Reset the words database</button>
     <label for="themeMenu">Change Theme:</label>
     <select id="themeMenu" onchange="changeTheme()">

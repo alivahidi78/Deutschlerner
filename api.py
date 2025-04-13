@@ -123,3 +123,14 @@ class API:
 
     def cancel_import(self):
         utils.DATA.cancel_import = True
+        
+    def import_dict_cc(self):
+        paths = self.open_files(("Text files (*.txt)",))
+        
+        if paths is None:
+            return False 
+        for p in paths:
+            utils.import_dict_cc(p)
+        if utils.DATA.cancel_import:
+            return False
+        return True

@@ -2,6 +2,7 @@ import os
 import shutil
 from dotenv import load_dotenv
 import numpy as np
+import pandas as pd
 import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
@@ -9,6 +10,7 @@ import re
 import text_processing
 from db import DB, Dictionary
 import sys
+import sqlite3
 
 class DATA:
     current_page = None
@@ -226,6 +228,30 @@ def get_loading_js():
     js_path = resource_path(os.getenv("LOADING_JS_PATH"))
     with open(js_path, 'r') as js_file:
         return js_file.read()
+    
+def import_dict_cc(txt_path):
+    load_dotenv("config.txt")
+    dict_path = os.getenv("DICT_PATH")
+    articles_path = os.getenv("ARTICLES_PATH")
+    df = pd.read_csv(txt_path, delimiter="\t", skiprows=9, header=None)
+    df["genus"] = df[0].str.extract(r"\{(.*?)\}")
+    cleanup_patterns = [r"\(.*?\)", r"\[.*?\]", r"\{.*?\}"]
+    for pattern in cleanup_patterns:
+        df[0] = df[0].str.replace(pattern, "", regex=True)
+    df[0] = df[0].str.strip()
+    
+    df = df[df[0].notna() & df[0].str.match(r"^[A-Za-zÄäÖöÜüß\-]+$")]
+    df = df.reset_index(drop=True)
+    df.columns = ["text", "translation", "pos", "desc", "genus"]
+
+    with sqlite3.connect(dict_path) as conn:
+        df.to_sql("translation_table", conn, if_exists="replace", index=False)
+    
+    lemma_df = df[["text", "genus"]].rename(columns={"text": "lemma"})
+    lemma_df = lemma_df[lemma_df["genus"].notna()].reset_index(drop=True)
+
+    with sqlite3.connect(articles_path) as conn:
+        lemma_df.to_sql("lemma_genus", conn, if_exists="replace", index=False)
     
 def resource_path(relative_path):
     try:
