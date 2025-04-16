@@ -1,0 +1,3 @@
+TEST_TITLE = "Das höchste Gut und Übel"
+TEST_TXT_PATH = "./examples/example.txt"
+LOADING_JS_PATH = "./Interface/script/loading.js"

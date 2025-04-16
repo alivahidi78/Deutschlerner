@@ -46,7 +46,7 @@ def set_book_data(book_data):
     DB.set_last_opened_book(DATA.book_id)
     
 def get_sample_chapter_df():
-    load_dotenv(resource_path(".env"))
+    load_dotenv(resource_path("paths.txt"))
     title = os.getenv("TEST_TITLE")
     set_book_data(["x", title, "x", "x"])
     df = DB.read_chapter_from_db("x", "x")
@@ -147,7 +147,7 @@ def epub2txt(epub_object, book_id):
 def import_epub(path):
     DATA.cancel_import = False
     DB.collect_garbage()
-    load_dotenv(resource_path(".env"))
+    load_dotenv(resource_path("paths.txt"))
     epub_book = epub.read_epub(path)
     title = epub_book.title
     id = DB.add_book(title, 1)
@@ -168,7 +168,7 @@ def import_epub(path):
 def import_txt(path):
     DATA.cancel_import = False
     DB.collect_garbage()
-    load_dotenv(resource_path(".env"))
+    load_dotenv(resource_path("paths.txt"))
     file_name = os.path.basename(path)
     id = DB.add_book(file_name, 1)
     DATA.window.evaluate_js(f"setBook('{file_name}');")
@@ -224,7 +224,7 @@ def translate(text):
     return [article, trans]
 
 def get_loading_js():
-    load_dotenv(resource_path(".env"))
+    load_dotenv(resource_path("paths.txt"))
     js_path = resource_path(os.getenv("LOADING_JS_PATH"))
     with open(js_path, 'r') as js_file:
         return js_file.read()

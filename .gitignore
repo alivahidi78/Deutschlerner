@@ -1,11 +1,11 @@
 .venv/
-examples/
 dictionary/
+de_core_news_md/
 db/
-.env
-test.ipynb
-main.spec
 build/
 dist/
 __pycache__/
-nlp_core/
+.env
+test.ipynb
+main.spec
+tasks.txt

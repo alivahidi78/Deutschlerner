@@ -15,7 +15,7 @@ class DB:
         """
         
         load_dotenv("config.txt")
-        load_dotenv(utils.resource_path(".env"))
+        load_dotenv(utils.resource_path("paths.txt"))
         db_folder = os.getenv("DB_FOLDER")
         if not os.path.exists(db_folder):
             os.makedirs(db_folder)

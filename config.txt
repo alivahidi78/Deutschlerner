@@ -2,4 +2,4 @@ DB_FOLDER = "./db/"
 DB_PATH = "./db/user_data.data" #path where user data is stored
 DICT_PATH = "./db/dict.data" #path where the dictionary file is located
 ARTICLES_PATH = "./db/articles.data" #path where the articles file is located
-NLP_CORE_PATH = "./nlp_core" #path where spacy core is stored
+NLP_CORE_PATH = "./de_core_news_md" #path where spacy core is stored
